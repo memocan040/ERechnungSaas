@@ -1,0 +1,1443 @@
+[00:00:01.609] Server  LOG     ✓ Ready in 1128ms
+[00:00:04.663] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:04.694] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:05.578] Browser ERROR   uncaughtError: Error: ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+[00:00:05.811] Browser ERROR   uncaughtError: Error: ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+[00:00:05.813] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:05.813] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:05.813] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:05.813] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:05.813] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:05.813] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:05.813] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:05.813] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:05.813] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:05.963] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:05.963] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:05.963] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:05.963] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:05.963] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:05.963] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:05.963] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:05.963] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:05.963] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:06.014] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:06.014] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:06.014] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:06.014] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:06.014] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:06.014] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:06.014] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:06.014] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:06.014] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:06.014] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:06.014] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:08.337] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:08.337] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:08.337] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:08.337] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:08.337] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.371] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:12.521] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.521] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.521] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.521] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.521] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.649] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:12.798] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.798] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.798] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.798] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.798] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.798] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.798] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.798] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.798] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.815] Browser ERROR   uncaughtError: Error: ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+[00:00:12.969] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.969] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.969] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.969] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.969] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.969] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:12.969] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:12.969] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:12.969] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.378] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.378] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.378] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.378] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.378] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.434] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:20.437] Server  ERROR   ⨯ ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+
+
+./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+
+
+./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+
+
+./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+
+[00:00:20.698] Browser ERROR   uncaughtError: Error: ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+[00:00:20.722] Browser ERROR   uncaughtError: Error: ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+
+[00:00:20.873] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.874] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.874] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.874] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.874] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:00:20.874] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:00:20.874] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:00:20.874] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:01:53.531] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:01:53.531] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:01:53.531] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:01:53.531] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:01:53.531] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:01:53.531] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:01:53.531] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:01:53.531] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:01:53.531] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:01:53.531] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:01:53.531] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:01:53.531] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:01:53.532] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:01:53.532] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:01:53.532] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:01:53.532] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:01:53.532] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:01:53.532] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:02:17.283] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:02:17.283] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:02:17.283] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:02:17.283] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:02:17.283] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:02:29.700] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:02:29.700] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:02:29.700] Browser ERROR   ./src/app/company
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/company and /company.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/[id] and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/customers
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/customers/new and /customers.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/[id] and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/invoices
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/invoices/new and /invoices.
+[00:02:29.700] Browser ERROR   ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/reports and /reports.
+[00:02:29.700] Browser ERROR   ./src/app/settings
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/settings and /settings.
+[00:02:55.900] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:56.370] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:20.426] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:20.679] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:09:39.701] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:46.066] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:09:46.066] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:11:16.725] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:11:16.725] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:13:28.654] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:35.604] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:13:35.604] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:18:29.807] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:18:29.975] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:18:35.182] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:18:35.182] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:20:48.807] Server  LOG     ✓ Compiled in 104ms
+[00:21:09.252] Server  LOG     ✓ Compiled in 77ms
+[00:21:33.503] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:21:33.507] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:21:34.409] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:34.970] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:21:34.970] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:21:34.970] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:21:34.970] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:45.424] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:45.428] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:46.263] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:46.698] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:46.698] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:46.698] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:22:46.698] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:23:21.572] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:21.892] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/invoices" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:24:14.493] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:14.813] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/customers" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:28:15.555] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:28:46.617] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:28:52.611] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:28:57.941] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:29:04.606] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:29:04.606] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:29:45.585] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:45.593] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:47.225] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:29:47.824] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:47.824] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:47.824] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:47.824] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:29:47.824] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:30:02.699] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:30:11.116] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:30:11.116] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:32:15.244] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:48.773] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:48.991] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/login" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:32:55.451] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:55.766] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:33:02.784] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:33:02.784] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:34:05.468] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:05.848] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/invoices" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:34:33.339] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:34:33.348] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:34:34.783] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:35.316] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:34:35.316] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:34:35.316] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:34:35.316] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:35:53.434] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:53.752] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:36:04.343] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:36:04.343] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:38:11.651] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:11.942] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/invoices" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:41:04.439] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:41:04.746] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/customers" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[00:44:57.231] Server  LOG     ✓ Compiled in 156ms
+[00:45:08.205] Server  LOG     ✓ Compiled in 96ms
+[00:45:23.731] Server  LOG     ✓ Compiled in 204ms
+[00:45:24.498] Browser WARN    Image with src "/screenshots/customers_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.498] Browser WARN    Image with src "/screenshots/invoices_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.498] Browser WARN    Image with src "/screenshots/dashboard_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.557] Browser WARN    Image with src "/screenshots/dashboard_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.557] Browser WARN    Image with src "/screenshots/customers_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.557] Browser WARN    Image with src "/screenshots/invoices_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.787] Browser WARN    Image with src "/screenshots/customers_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.788] Browser WARN    Image with src "/screenshots/invoices_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:24.788] Browser WARN    Image with src "/screenshots/dashboard_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:25.228] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:45:36.364] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:45:36.691] Browser WARN    Image with src "/screenshots/dashboard_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:36.691] Browser WARN    Image with src "/screenshots/invoices_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:45:36.691] Browser WARN    Image with src "/screenshots/customers_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:48:59.299] Browser WARN    Image with src "/screenshots/invoices_light.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:51:00.290] Server  LOG     ✓ Compiled in 151ms
+[00:51:26.249] Server  LOG     ✓ Compiled in 121ms
+[00:52:24.278] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:55:58.557] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:32.611] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:32.926] Browser WARN    Image with src "/screenshots/dashboard_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:03:32.926] Browser WARN    Image with src "/screenshots/invoices_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:03:32.926] Browser WARN    Image with src "/screenshots/customers_light.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:04:57.903] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:57.914] Server  WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:58.897] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:04:59.443] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:59.443] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:59.443] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:59.443] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:04:59.443] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="de">
+                          <body
++                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased"
+-                           className="inter_786c1081-module__J60SBq__variable font-sans antialiased antigravity-scrol..."
+                          >
+                  ...
+
+[01:05:42.506] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
