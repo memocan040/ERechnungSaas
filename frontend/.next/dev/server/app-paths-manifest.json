@@ -1,13 +1,9 @@
 {
   "/(dashboard)/company/page": "app/(dashboard)/company/page.js",
-  "/(dashboard)/customers/[id]/page": "app/(dashboard)/customers/[id]/page.js",
-  "/(dashboard)/customers/new/page": "app/(dashboard)/customers/new/page.js",
   "/(dashboard)/customers/page": "app/(dashboard)/customers/page.js",
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(dashboard)/invoices/[id]/page": "app/(dashboard)/invoices/[id]/page.js",
   "/(dashboard)/invoices/new/page": "app/(dashboard)/invoices/new/page.js",
   "/(dashboard)/invoices/page": "app/(dashboard)/invoices/page.js",
   "/(dashboard)/reports/page": "app/(dashboard)/reports/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
   "/page": "app/page.js"
 }
