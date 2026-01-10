@@ -164,28 +164,67 @@ export default function InvoiceDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kunde</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {invoice.customer && (
-                <div className="space-y-1">
-                  <p className="font-semibold">{invoice.customer.companyName}</p>
-                  {invoice.customer.contactName && <p>{invoice.customer.contactName}</p>}
-                  {invoice.customer.street && invoice.customer.houseNumber && (
-                    <p>{invoice.customer.street} {invoice.customer.houseNumber}</p>
-                  )}
-                  {invoice.customer.postalCode && invoice.customer.city && (
-                    <p>{invoice.customer.postalCode} {invoice.customer.city}</p>
-                  )}
-                  {invoice.customer.vatId && (
-                    <p className="text-muted-foreground">USt-IdNr.: {invoice.customer.vatId}</p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Absender und Empfänger nebeneinander */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Absender (Unternehmen) */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Von (Absender)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {invoice.company ? (
+                  <div className="space-y-1 text-sm">
+                    <p className="font-semibold text-base">{invoice.company.name}</p>
+                    {invoice.company.legalName && <p className="text-muted-foreground">{invoice.company.legalName}</p>}
+                    {invoice.company.street && invoice.company.houseNumber && (
+                      <p>{invoice.company.street} {invoice.company.houseNumber}</p>
+                    )}
+                    {invoice.company.postalCode && invoice.company.city && (
+                      <p>{invoice.company.postalCode} {invoice.company.city}</p>
+                    )}
+                    {invoice.company.country && <p>{invoice.company.country}</p>}
+                    <div className="pt-2 space-y-1 text-muted-foreground">
+                      {invoice.company.email && <p>E-Mail: {invoice.company.email}</p>}
+                      {invoice.company.phone && <p>Tel: {invoice.company.phone}</p>}
+                      {invoice.company.vatId && <p>USt-IdNr.: {invoice.company.vatId}</p>}
+                      {invoice.company.taxNumber && <p>Steuernr.: {invoice.company.taxNumber}</p>}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">Keine Unternehmensdaten hinterlegt</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Empfänger (Kunde) */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">An (Empfänger)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {invoice.customer ? (
+                  <div className="space-y-1 text-sm">
+                    <p className="font-semibold text-base">{invoice.customer.companyName}</p>
+                    {invoice.customer.contactName && <p>{invoice.customer.contactName}</p>}
+                    {invoice.customer.street && invoice.customer.houseNumber && (
+                      <p>{invoice.customer.street} {invoice.customer.houseNumber}</p>
+                    )}
+                    {invoice.customer.postalCode && invoice.customer.city && (
+                      <p>{invoice.customer.postalCode} {invoice.customer.city}</p>
+                    )}
+                    {invoice.customer.country && <p>{invoice.customer.country}</p>}
+                    <div className="pt-2 space-y-1 text-muted-foreground">
+                      {invoice.customer.email && <p>E-Mail: {invoice.customer.email}</p>}
+                      {invoice.customer.phone && <p>Tel: {invoice.customer.phone}</p>}
+                      {invoice.customer.vatId && <p>USt-IdNr.: {invoice.customer.vatId}</p>}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">Kein Kunde zugeordnet</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           <Card>
             <CardHeader>
@@ -282,6 +321,35 @@ export default function InvoiceDetailPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Bankverbindung für Zahlungsanweisungen */}
+          {invoice.company && (invoice.company.iban || invoice.company.bankName) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Bankverbindung</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {invoice.company.bankName && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Bank</span>
+                    <span>{invoice.company.bankName}</span>
+                  </div>
+                )}
+                {invoice.company.iban && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">IBAN</span>
+                    <span className="font-mono text-xs">{invoice.company.iban}</span>
+                  </div>
+                )}
+                {invoice.company.bic && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">BIC</span>
+                    <span className="font-mono text-xs">{invoice.company.bic}</span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

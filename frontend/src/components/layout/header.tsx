@@ -4,10 +4,11 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { MobileSidebar } from './sidebar';
 import { Bell, Search, Sun, Moon } from 'lucide-react';
-import { currentUser } from '@/lib/mock-data';
+import { useAuth } from '@/lib/auth-context';
 import { useState, useEffect } from 'react';
 
 export function Header() {
+  const { user } = useAuth();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,9 @@ export function Header() {
     setIsDark(!isDark);
   };
 
-  const initials = currentUser.name
+  const displayName = user?.name || 'Gast';
+  const displayEmail = user?.email || 'Nicht angemeldet';
+  const initials = displayName
     .split(' ')
     .map((n) => n[0])
     .join('')
@@ -75,8 +78,8 @@ export function Header() {
           {/* User Profile */}
           <div className="flex items-center gap-3 ml-2 pl-3 border-l border-border/50">
             <div className="hidden text-right text-sm md:block">
-              <p className="font-semibold text-foreground">{currentUser.name}</p>
-              <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+              <p className="font-semibold text-foreground">{displayName}</p>
+              <p className="text-xs text-muted-foreground">{displayEmail}</p>
             </div>
             <div className="relative group cursor-pointer">
               <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background transition-all duration-200 group-hover:ring-primary/40">

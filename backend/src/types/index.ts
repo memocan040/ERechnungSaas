@@ -89,6 +89,7 @@ export interface Invoice {
   xmlData?: string;
   items?: InvoiceItem[];
   customer?: Customer;
+  company?: Company;
   createdAt: Date;
   updatedAt: Date;
 }

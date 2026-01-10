@@ -109,8 +109,14 @@ export class InvoiceService {
   }
 
   async findById(userId: string, invoiceId: string): Promise<Invoice> {
+    // Get invoice with full customer data
     const invoiceResult = await query(
-      `SELECT i.*, c.company_name as customer_name, c.email as customer_email
+      `SELECT i.*, 
+        c.company_name, c.contact_name, c.email AS customer_email, c.phone AS customer_phone,
+        c.street AS customer_street, c.house_number AS customer_house_number,
+        c.postal_code AS customer_postal_code, c.city AS customer_city, 
+        c.country AS customer_country, c.vat_id AS customer_vat_id,
+        c.customer_number
        FROM invoices i
        LEFT JOIN customers c ON i.customer_id = c.id
        WHERE i.id = $1 AND i.user_id = $2`,
@@ -127,8 +133,60 @@ export class InvoiceService {
       [invoiceId]
     );
 
-    const invoice = this.mapToInvoice(invoiceResult.rows[0]);
+    // Get company data for the invoice
+    const companyResult = await query(
+      `SELECT * FROM companies WHERE user_id = $1`,
+      [userId]
+    );
+
+    const row = invoiceResult.rows[0];
+    const invoice = this.mapToInvoice(row);
     invoice.items = itemsResult.rows.map(this.mapToInvoiceItem);
+
+    // Add complete customer data
+    if (row.company_name) {
+      invoice.customer = {
+        id: row.customer_id,
+        companyName: row.company_name,
+        contactName: row.contact_name,
+        email: row.customer_email,
+        phone: row.customer_phone,
+        street: row.customer_street,
+        houseNumber: row.customer_house_number,
+        postalCode: row.customer_postal_code,
+        city: row.customer_city,
+        country: row.customer_country,
+        vatId: row.customer_vat_id,
+        customerNumber: row.customer_number,
+      } as any;
+    }
+
+    // Add company data
+    if (companyResult.rows.length > 0) {
+      const companyRow = companyResult.rows[0];
+      invoice.company = {
+        id: companyRow.id,
+        name: companyRow.name,
+        legalName: companyRow.legal_name,
+        street: companyRow.street,
+        houseNumber: companyRow.house_number,
+        postalCode: companyRow.postal_code,
+        city: companyRow.city,
+        country: companyRow.country,
+        vatId: companyRow.vat_id,
+        taxNumber: companyRow.tax_number,
+        tradeRegister: companyRow.trade_register,
+        court: companyRow.court,
+        managingDirector: companyRow.managing_director,
+        phone: companyRow.phone,
+        email: companyRow.email,
+        website: companyRow.website,
+        bankName: companyRow.bank_name,
+        iban: companyRow.iban,
+        bic: companyRow.bic,
+        logoUrl: companyRow.logo_url,
+      } as any;
+    }
 
     return invoice;
   }

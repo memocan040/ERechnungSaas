@@ -17,6 +17,7 @@ export interface Invoice {
   paymentTerms?: string;
   items?: InvoiceItem[];
   customer?: Customer;
+  company?: Company;
   createdAt: string;
   updatedAt: string;
 }
