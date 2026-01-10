@@ -118,14 +118,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* New Invoice Button */}
         <div className="p-4">
-          <Button
-            className={cn('w-full gap-2', collapsed && 'px-0')}
-            size={collapsed ? 'icon' : 'default'}
-            variant="default"
-          >
-            <PlusCircle className="h-4 w-4" />
-            {!collapsed && <span>Neue Rechnung</span>}
-          </Button>
+          <Link href="/invoices/new">
+            <Button
+              className={cn('w-full gap-2', collapsed && 'px-0')}
+              size={collapsed ? 'icon' : 'default'}
+              variant="default"
+            >
+              <PlusCircle className="h-4 w-4" />
+              {!collapsed && <span>Neue Rechnung</span>}
+            </Button>
+          </Link>
         </div>
 
         <ScrollArea className="flex-1 px-3">
@@ -213,10 +215,12 @@ export function MobileSidebar() {
         </div>
 
         <div className="p-4">
-          <Button className="w-full gap-2" onClick={() => setOpen(false)}>
-            <PlusCircle className="h-4 w-4" />
-            <span>Neue Rechnung</span>
-          </Button>
+          <Link href="/invoices/new" onClick={() => setOpen(false)}>
+            <Button className="w-full gap-2">
+              <PlusCircle className="h-4 w-4" />
+              <span>Neue Rechnung</span>
+            </Button>
+          </Link>
         </div>
 
         <ScrollArea className="h-[calc(100vh-160px)] px-3">

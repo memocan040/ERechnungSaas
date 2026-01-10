@@ -158,10 +158,11 @@ storybook-static
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
 
-# E-Rechnung specific
+# E-Rechnung specific - only ignore output directories, not source code
 **/uploads/*
 !**/uploads/.gitkeep
 **/downloads/*
 !**/downloads/.gitkeep
-**/invoices/*
-!**/invoices/.gitkeep
+# Only ignore backend invoice output directory, not frontend route
+backend/invoices/*
+!backend/invoices/.gitkeep

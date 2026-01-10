@@ -1,27 +1,24 @@
 {
   "app": {
-    "[project]/src/app/(dashboard)/company/page": [
+    "[project]/frontend/src/app/(dashboard)/company/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/(dashboard)/customers/page": [
+    "[project]/frontend/src/app/(dashboard)/customers/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/(dashboard)/dashboard/page": [
+    "[project]/frontend/src/app/(dashboard)/dashboard/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/(dashboard)/invoices/page": [
+    "[project]/frontend/src/app/(dashboard)/invoices/new/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/(dashboard)/settings/page": [
+    "[project]/frontend/src/app/(dashboard)/invoices/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/_not-found/page": [
+    "[project]/frontend/src/app/(dashboard)/reports/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/customers/new/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/src/app/page": [
+    "[project]/frontend/src/app/(dashboard)/settings/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ]
   },
