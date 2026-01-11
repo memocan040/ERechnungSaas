@@ -20,6 +20,8 @@ import {
   BarChart3,
   Building2,
   Sparkles,
+  BookOpen,
+  Wallet,
 } from 'lucide-react';
 
 interface NavItem {
@@ -33,6 +35,11 @@ const mainNavItems: NavItem[] = [
   { title: 'Rechnungen', href: '/invoices', icon: FileText },
   { title: 'Kunden', href: '/customers', icon: Users },
   { title: 'Berichte', href: '/reports', icon: BarChart3 },
+];
+
+const accountingNavItems: NavItem[] = [
+  { title: 'Kontenplan', href: '/accounting/accounts', icon: Wallet },
+  { title: 'Buchungssätze', href: '/accounting/journal', icon: BookOpen },
 ];
 
 const secondaryNavItems: NavItem[] = [
@@ -140,6 +147,22 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             </p>
             <nav className="flex flex-col gap-1">
               {mainNavItems.map((item) => (
+                <NavLink key={item.href} item={item} collapsed={collapsed} />
+              ))}
+            </nav>
+          </div>
+
+          <Separator className="my-4 bg-sidebar-border/50" />
+
+          <div className="space-y-1">
+            <p className={cn(
+              "px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70",
+              collapsed && "sr-only"
+            )}>
+              Buchhaltung
+            </p>
+            <nav className="flex flex-col gap-1">
+              {accountingNavItems.map((item) => (
                 <NavLink key={item.href} item={item} collapsed={collapsed} />
               ))}
             </nav>

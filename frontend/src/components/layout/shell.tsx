@@ -36,7 +36,7 @@ export function Shell({ children }: ShellProps) {
             'transition-all duration-300'
           )}
         >
-          <div className="mx-auto max-w-7xl">
+          <div className="w-full h-full">
             {children}
           </div>
         </main>

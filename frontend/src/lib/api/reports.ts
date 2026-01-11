@@ -7,7 +7,7 @@ export const reportsApi = {
   },
 
   async getRevenueByMonth(dateRange?: DateRange) {
-    return apiClient.get<MonthlyRevenue[]>('/reports/revenue/monthly', dateRange);
+    return apiClient.get<MonthlyRevenue[]>('/reports/revenue/monthly', { ...dateRange });
   },
 
   async getRevenueByCustomer(dateRange?: DateRange, limit = 10) {
@@ -15,11 +15,11 @@ export const reportsApi = {
   },
 
   async getTaxSummary(dateRange?: DateRange) {
-    return apiClient.get<TaxSummary[]>('/reports/tax', dateRange);
+    return apiClient.get<TaxSummary[]>('/reports/tax', { ...dateRange });
   },
 
   async getInvoiceStatusSummary(dateRange?: DateRange) {
-    return apiClient.get<StatusDistribution[]>('/reports/invoices/status', dateRange);
+    return apiClient.get<StatusDistribution[]>('/reports/invoices/status', { ...dateRange });
   },
 
   async exportRevenueCsv(dateRange?: DateRange) {

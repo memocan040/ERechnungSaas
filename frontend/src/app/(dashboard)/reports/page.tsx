@@ -253,7 +253,7 @@ export default function ReportsPage() {
                     <XAxis dataKey="month" />
                     <YAxis tickFormatter={(value) => `€${value / 1000}k`} />
                     <Tooltip
-                      formatter={(value: number) => formatCurrency(value)}
+                      formatter={(value: any) => formatCurrency(Number(value) || 0)}
                       labelFormatter={(label) => `Monat: ${label}`}
                     />
                     <Bar dataKey="revenue" fill="#8884d8" name="Umsatz" />
@@ -380,7 +380,7 @@ export default function ReportsPage() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                        label={({ name, percent }: { name?: string; percent?: number }) => `${name || ''} (${((percent || 0) * 100).toFixed(0)}%)`}
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
@@ -389,7 +389,7 @@ export default function ReportsPage() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value: number, name: string) => [value, name]} />
+                      <Tooltip formatter={(value: any, name: any) => [value, name]} />
                       <Legend />
                     </PieChart>
                   </ResponsiveContainer>

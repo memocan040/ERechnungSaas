@@ -21,6 +21,10 @@ const COLORS = {
     color: 'rgb(239, 68, 68)',
     gradient: ['rgb(248, 113, 113)', 'rgb(220, 38, 38)'],
   },
+  cancelled: {
+    color: 'rgb(156, 163, 175)',
+    gradient: ['rgb(156, 163, 175)', 'rgb(107, 114, 128)'],
+  },
 };
 
 const STATUS_LABELS = {
@@ -28,11 +32,12 @@ const STATUS_LABELS = {
   sent: { label: 'Versendet', icon: '📤' },
   paid: { label: 'Bezahlt', icon: '✅' },
   overdue: { label: 'Überfällig', icon: '⚠️' },
+  cancelled: { label: 'Storniert', icon: '🚫' },
 };
 
 export function StatusChart() {
   const data = statusDistribution.map((item) => ({
-    name: item.label,
+    name: STATUS_LABELS[item.status as keyof typeof STATUS_LABELS]?.label || item.status,
     value: item.count,
     status: item.status,
   }));

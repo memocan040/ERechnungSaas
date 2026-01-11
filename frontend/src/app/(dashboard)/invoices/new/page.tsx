@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,8 +24,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Customer, InvoiceItem } from '@/types';
-import { invoicesApi, customersApi, settingsApi } from '@/lib/api';
+import { Customer, InvoiceItem, Company } from '@/types';
+import { invoicesApi, customersApi, settingsApi, companyApi } from '@/lib/api';
+import { InvoicePreview } from '@/components/invoice/invoice-preview';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface InvoiceItemForm {
   description: string;
@@ -51,6 +53,7 @@ export default function NewInvoicePage() {
   const [dueDate, setDueDate] = useState('');
   const [notes, setNotes] = useState('');
   const [paymentTerms, setPaymentTerms] = useState('');
+  const [company, setCompany] = useState<Company | undefined>(undefined);
   const [items, setItems] = useState<InvoiceItemForm[]>([
     { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 },
   ]);
@@ -58,6 +61,7 @@ export default function NewInvoicePage() {
   useEffect(() => {
     loadCustomers();
     loadSettings();
+    loadCompany();
   }, []);
 
   const loadCustomers = async () => {
@@ -89,6 +93,17 @@ export default function NewInvoicePage() {
       const due = new Date();
       due.setDate(due.getDate() + 14);
       setDueDate(due.toISOString().split('T')[0]);
+    }
+  };
+
+  const loadCompany = async () => {
+    try {
+      const response = await companyApi.get();
+      if (response.success && response.data) {
+        setCompany(response.data);
+      }
+    } catch (error) {
+      console.error('Error loading company:', error);
     }
   };
 
@@ -179,10 +194,26 @@ export default function NewInvoicePage() {
   };
 
   const totals = calculateTotals();
+  const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
+
+  const previewInvoice = {
+    invoiceNumber: 'VORSCHAU',
+    status: 'draft' as const,
+    issueDate,
+    dueDate,
+    items: items,
+    subtotal: totals.subtotal,
+    taxAmount: totals.taxAmount,
+    total: totals.total,
+    customer: selectedCustomer,
+    company: company,
+    notes,
+    paymentTerms
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col">
+      <div className="flex items-center gap-4 flex-none">
         <Link href="/invoices">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
@@ -196,9 +227,10 @@ export default function NewInvoicePage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
+      <div className="flex-1 min-h-0 grid lg:grid-cols-2 gap-6">
+        {/* Left Column - Form */}
+        <div className="overflow-y-auto pr-2 pb-10">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Rechnungsdetails</CardTitle>
@@ -221,8 +253,8 @@ export default function NewInvoicePage() {
                     </Select>
                   </div>
                   <div className="flex items-end">
-                    <Link href="/customers/new">
-                      <Button variant="outline" type="button">
+                    <Link href="/customers/new" className="w-full">
+                      <Button variant="outline" type="button" className="w-full">
                         <Plus className="mr-2 h-4 w-4" />
                         Neuer Kunde
                       </Button>
@@ -263,46 +295,37 @@ export default function NewInvoicePage() {
                 </Button>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[40%]">Beschreibung</TableHead>
-                      <TableHead>Menge</TableHead>
-                      <TableHead>Einheit</TableHead>
-                      <TableHead>Einzelpreis</TableHead>
-                      <TableHead>MwSt.</TableHead>
-                      <TableHead className="text-right">Gesamt</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {items.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
+                <div className="space-y-4">
+                  {items.map((item, index) => (
+                    <div key={index} className="grid gap-4 p-4 border rounded-lg bg-card text-card-foreground shadow-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="md:col-span-6 space-y-2">
+                          <Label>Beschreibung</Label>
                           <Input
-                            placeholder="Beschreibung"
+                            placeholder="Artikel oder Dienstleistung"
                             value={item.description}
                             onChange={(e) => updateItem(index, 'description', e.target.value)}
                             required
                           />
-                        </TableCell>
-                        <TableCell>
+                        </div>
+                        <div className="md:col-span-2 space-y-2">
+                          <Label>Menge</Label>
                           <Input
                             type="number"
                             min="0.001"
                             step="0.001"
                             value={item.quantity}
                             onChange={(e) => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)}
-                            className="w-20"
                             required
                           />
-                        </TableCell>
-                        <TableCell>
+                        </div>
+                        <div className="md:col-span-2 space-y-2">
+                          <Label>Einheit</Label>
                           <Select
                             value={item.unit}
                             onValueChange={(value) => updateItem(index, 'unit', value)}
                           >
-                            <SelectTrigger className="w-24">
+                            <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -317,24 +340,39 @@ export default function NewInvoicePage() {
                               <SelectItem value="Liter">Liter</SelectItem>
                             </SelectContent>
                           </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Input
+                        </div>
+                        <div className="md:col-span-2 flex items-end justify-end">
+                           <Button
+                            variant="ghost"
+                            size="icon"
+                            type="button"
+                            onClick={() => removeItem(index)}
+                            disabled={items.length === 1}
+                            className="text-destructive hover:text-destructive/90"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="md:col-span-4 space-y-2">
+                           <Label>Einzelpreis (€)</Label>
+                           <Input
                             type="number"
                             min="0"
                             step="0.01"
                             value={item.unitPrice}
                             onChange={(e) => updateItem(index, 'unitPrice', parseFloat(e.target.value) || 0)}
-                            className="w-28"
                             required
                           />
-                        </TableCell>
-                        <TableCell>
+                        </div>
+                        <div className="md:col-span-4 space-y-2">
+                          <Label>MwSt. (%)</Label>
                           <Select
                             value={item.taxRate.toString()}
                             onValueChange={(value) => updateItem(index, 'taxRate', parseFloat(value))}
                           >
-                            <SelectTrigger className="w-20">
+                            <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -343,25 +381,15 @@ export default function NewInvoicePage() {
                               <SelectItem value="0">0%</SelectItem>
                             </SelectContent>
                           </Select>
-                        </TableCell>
-                        <TableCell className="text-right font-medium">
-                          {formatCurrency(calculateItemTotal(item))}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            type="button"
-                            onClick={() => removeItem(index)}
-                            disabled={items.length === 1}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </div>
+                         <div className="md:col-span-4 flex items-center justify-between md:justify-end gap-2 pt-6">
+                            <span className="text-muted-foreground text-sm">Gesamt:</span>
+                            <span className="font-semibold">{formatCurrency(calculateItemTotal(item))}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
@@ -391,10 +419,8 @@ export default function NewInvoicePage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          <div className="space-y-6">
-            <Card>
+            
+             <Card>
               <CardHeader>
                 <CardTitle>Zusammenfassung</CardTitle>
               </CardHeader>
@@ -424,9 +450,20 @@ export default function NewInvoicePage() {
               )}
               Rechnung erstellen
             </Button>
+          </form>
+        </div>
+
+        {/* Right Column - Live Preview */}
+        <div className="hidden lg:block bg-muted/30 rounded-lg border p-4 overflow-hidden h-full flex flex-col">
+          <div className="flex items-center gap-2 mb-4 text-muted-foreground">
+             <Eye className="h-4 w-4" />
+             <span className="font-medium text-sm">Live-Vorschau</span>
+          </div>
+          <div className="flex-1 bg-background rounded-md shadow-sm overflow-hidden border">
+             <InvoicePreview invoiceData={previewInvoice} />
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

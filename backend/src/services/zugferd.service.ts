@@ -125,20 +125,45 @@ export class ZugferdService {
         doc.text('Gesamtbetrag (brutto):', 350, totalsY + 45, { width: 130 });
         doc.text(this.formatCurrency(invoice.total), 480, totalsY + 45, { width: 70, align: 'right' });
 
-        // Payment Info
-        if (company && (company.bankName || company.iban)) {
+        // Payment Terms, Bank Info & Notes
+        let currentY = totalsY + 80;
+
+        if (invoice.paymentTerms) {
+          doc.font('Helvetica-Bold').fontSize(9);
+          doc.text('Zahlungsbedingungen:', 50, currentY);
+          currentY += 15;
           doc.font('Helvetica').fontSize(9);
-          doc.text('Bankverbindung:', 50, totalsY + 80);
-          if (company.bankName) doc.text(`Bank: ${company.bankName}`, 50, totalsY + 95);
-          if (company.iban) doc.text(`IBAN: ${company.iban}`, 50, totalsY + 110);
-          if (company.bic) doc.text(`BIC: ${company.bic}`, 50, totalsY + 125);
+          doc.text(invoice.paymentTerms, 50, currentY, { width: 250 });
+          currentY += 30;
         }
 
-        // Notes
-        if (invoice.notes) {
+        if (company && (company.bankName || company.iban)) {
+          doc.font('Helvetica-Bold').fontSize(9);
+          doc.text('Bankverbindung:', 50, currentY);
+          currentY += 15;
+          
           doc.font('Helvetica').fontSize(9);
-          doc.text('Hinweise:', 50, totalsY + 150);
-          doc.text(invoice.notes, 50, totalsY + 165, { width: 250 });
+          if (company.bankName) {
+            doc.text(`Bank: ${company.bankName}`, 50, currentY);
+            currentY += 15;
+          }
+          if (company.iban) {
+            doc.text(`IBAN: ${company.iban}`, 50, currentY);
+            currentY += 15;
+          }
+          if (company.bic) {
+            doc.text(`BIC: ${company.bic}`, 50, currentY);
+            currentY += 15;
+          }
+          currentY += 15;
+        }
+
+        if (invoice.notes) {
+          doc.font('Helvetica-Bold').fontSize(9);
+          doc.text('Hinweise:', 50, currentY);
+          currentY += 15;
+          doc.font('Helvetica').fontSize(9);
+          doc.text(invoice.notes, 50, currentY, { width: 250 });
         }
 
         // Footer

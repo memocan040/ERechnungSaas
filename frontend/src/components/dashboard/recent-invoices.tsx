@@ -37,9 +37,14 @@ const STATUS_STYLES: Record<Invoice['status'], { bg: string; text: string; dot: 
     dot: 'bg-emerald-500',
   },
   overdue: {
-    bg: 'bg-red-50 dark:bg-red-900/30',
-    text: 'text-red-700 dark:text-red-300',
-    dot: 'bg-red-500 animate-pulse',
+    bg: 'bg-red-100 dark:bg-red-500/10',
+    text: 'text-red-700 dark:text-red-400',
+    dot: 'bg-red-500',
+  },
+  cancelled: {
+    bg: 'bg-gray-100 dark:bg-gray-800',
+    text: 'text-gray-700 dark:text-gray-300',
+    dot: 'bg-gray-500',
   },
 };
 
@@ -90,14 +95,14 @@ export function RecentInvoices() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                           <FileText className="h-4 w-4" />
                         </div>
-                        <span className="font-semibold">{invoice.number}</span>
+                        <span className="font-semibold">{invoice.invoiceNumber}</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-foreground">{invoice.customerName}</p>
+                        <p className="font-medium text-foreground">{invoice.customer?.companyName || 'Unbekannt'}</p>
                         <p className="text-xs text-muted-foreground">
-                          {invoice.customerEmail}
+                          {invoice.customer?.email}
                         </p>
                       </div>
                     </TableCell>
@@ -117,7 +122,7 @@ export function RecentInvoices() {
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="font-bold text-lg">
-                        {formatCurrency(invoice.amount)}
+                        {formatCurrency(invoice.total)}
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
