@@ -1,6 +1,7 @@
 import { query } from '../config/database';
 import { Invoice, InvoiceItem } from '../types';
 import { AppError } from '../middleware/errorHandler';
+import { zugferdService } from './zugferd.service';
 
 interface InvoiceFilters {
   search?: string;
@@ -274,6 +275,21 @@ export class InvoiceService {
       [userId]
     );
 
+    // Get the complete invoice with all data
+    const completeInvoice = await this.findById(userId, invoice.id);
+
+    // Generate and store XML
+    try {
+      const xmlData = await zugferdService.generateXml(userId, completeInvoice);
+      await query(
+        'UPDATE invoices SET xml_data = $1 WHERE id = $2',
+        [xmlData, invoice.id]
+      );
+    } catch (error) {
+      console.error('Failed to generate XML for invoice:', error);
+      // Don't fail invoice creation if XML generation fails
+    }
+
     return this.findById(userId, invoice.id);
   }
 
@@ -374,6 +390,20 @@ export class InvoiceService {
          WHERE id = $${paramIndex} AND user_id = $${paramIndex + 1}`,
         values
       );
+    }
+
+    // Get the updated invoice
+    const updatedInvoice = await this.findById(userId, invoiceId);
+
+    // Regenerate XML with updated data
+    try {
+      const xmlData = await zugferdService.generateXml(userId, updatedInvoice);
+      await query(
+        'UPDATE invoices SET xml_data = $1 WHERE id = $2',
+        [xmlData, invoiceId]
+      );
+    } catch (error) {
+      console.error('Failed to regenerate XML for invoice:', error);
     }
 
     return this.findById(userId, invoiceId);

@@ -190,15 +190,23 @@ export class ZugferdService {
     const company = await companyService.findByUserId(userId);
     const customer = await customerService.findById(userId, invoice.customerId);
 
-    // ZUGFeRD 2.1 Basic XML Structure
+    // Calculate tax breakdown by tax rate
+    const taxBreakdown = this.calculateTaxBreakdown(invoice.items || []);
+
+    // XRechnung / ZUGFeRD 2.1 EXTENDED XML Structure (DATEV compatible)
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
     xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
-    xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+    xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+    xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <rsm:ExchangedDocumentContext>
     <ram:GuidelineSpecifiedDocumentContextParameter>
-      <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</ram:ID>
+      <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
     </ram:GuidelineSpecifiedDocumentContextParameter>
+    <ram:BusinessProcessSpecifiedDocumentContextParameter>
+      <ram:ID>A1</ram:ID>
+    </ram:BusinessProcessSpecifiedDocumentContextParameter>
   </rsm:ExchangedDocumentContext>
   <rsm:ExchangedDocument>
     <ram:ID>${this.escapeXml(invoice.invoiceNumber)}</ram:ID>
@@ -211,47 +219,66 @@ export class ZugferdService {
     <ram:ApplicableHeaderTradeAgreement>
       <ram:SellerTradeParty>
         <ram:Name>${this.escapeXml(company?.name || '')}</ram:Name>
+        ${company?.legalName ? `<ram:Description>${this.escapeXml(company.legalName)}</ram:Description>` : ''}
         <ram:PostalTradeAddress>
           <ram:PostcodeCode>${this.escapeXml(company?.postalCode || '')}</ram:PostcodeCode>
           <ram:LineOne>${this.escapeXml((company?.street || '') + ' ' + (company?.houseNumber || ''))}</ram:LineOne>
           <ram:CityName>${this.escapeXml(company?.city || '')}</ram:CityName>
-          <ram:CountryID>DE</ram:CountryID>
+          <ram:CountryID>${company?.country === 'Deutschland' ? 'DE' : 'DE'}</ram:CountryID>
         </ram:PostalTradeAddress>
+        ${company?.email ? `<ram:URIUniversalCommunication><ram:URIID schemeID="EM">${this.escapeXml(company.email)}</ram:URIID></ram:URIUniversalCommunication>` : ''}
+        ${company?.phone ? `<ram:DefinedTradeContact><ram:TelephoneUniversalCommunication><ram:CompleteNumber>${this.escapeXml(company.phone)}</ram:CompleteNumber></ram:TelephoneUniversalCommunication></ram:DefinedTradeContact>` : ''}
         ${company?.vatId ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">${this.escapeXml(company.vatId)}</ram:ID></ram:SpecifiedTaxRegistration>` : ''}
+        ${company?.taxNumber ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="FC">${this.escapeXml(company.taxNumber)}</ram:ID></ram:SpecifiedTaxRegistration>` : ''}
+        ${company?.tradeRegister ? `<ram:SpecifiedLegalOrganization><ram:TradingBusinessName>${this.escapeXml(company.tradeRegister)}</ram:TradingBusinessName></ram:SpecifiedLegalOrganization>` : ''}
       </ram:SellerTradeParty>
       <ram:BuyerTradeParty>
         <ram:Name>${this.escapeXml(customer.companyName)}</ram:Name>
+        ${customer.contactName ? `<ram:DefinedTradeContact><ram:PersonName>${this.escapeXml(customer.contactName)}</ram:PersonName></ram:DefinedTradeContact>` : ''}
         <ram:PostalTradeAddress>
           <ram:PostcodeCode>${this.escapeXml(customer.postalCode || '')}</ram:PostcodeCode>
           <ram:LineOne>${this.escapeXml((customer.street || '') + ' ' + (customer.houseNumber || ''))}</ram:LineOne>
           <ram:CityName>${this.escapeXml(customer.city || '')}</ram:CityName>
-          <ram:CountryID>DE</ram:CountryID>
+          <ram:CountryID>${customer.country === 'Deutschland' ? 'DE' : 'DE'}</ram:CountryID>
         </ram:PostalTradeAddress>
+        ${customer.email ? `<ram:URIUniversalCommunication><ram:URIID schemeID="EM">${this.escapeXml(customer.email)}</ram:URIID></ram:URIUniversalCommunication>` : ''}
         ${customer.vatId ? `<ram:SpecifiedTaxRegistration><ram:ID schemeID="VA">${this.escapeXml(customer.vatId)}</ram:ID></ram:SpecifiedTaxRegistration>` : ''}
       </ram:BuyerTradeParty>
     </ram:ApplicableHeaderTradeAgreement>
-    <ram:ApplicableHeaderTradeDelivery/>
+    <ram:ApplicableHeaderTradeDelivery>
+      <ram:ActualDeliverySupplyChainEvent>
+        <ram:OccurrenceDateTime>
+          <udt:DateTimeString format="102">${this.formatDateForXml(invoice.issueDate)}</udt:DateTimeString>
+        </ram:OccurrenceDateTime>
+      </ram:ActualDeliverySupplyChainEvent>
+    </ram:ApplicableHeaderTradeDelivery>
     <ram:ApplicableHeaderTradeSettlement>
       <ram:InvoiceCurrencyCode>${invoice.currency}</ram:InvoiceCurrencyCode>
       ${company?.iban ? `<ram:SpecifiedTradeSettlementPaymentMeans>
         <ram:TypeCode>58</ram:TypeCode>
+        <ram:Information>Überweisung</ram:Information>
         <ram:PayeePartyCreditorFinancialAccount>
           <ram:IBANID>${this.escapeXml(company.iban)}</ram:IBANID>
+          ${company.bankName ? `<ram:AccountName>${this.escapeXml(company.bankName)}</ram:AccountName>` : ''}
         </ram:PayeePartyCreditorFinancialAccount>
         ${company.bic ? `<ram:PayeeSpecifiedCreditorFinancialInstitution><ram:BICID>${this.escapeXml(company.bic)}</ram:BICID></ram:PayeeSpecifiedCreditorFinancialInstitution>` : ''}
       </ram:SpecifiedTradeSettlementPaymentMeans>` : ''}
-      <ram:ApplicableTradeTax>
-        <ram:CalculatedAmount>${invoice.taxAmount.toFixed(2)}</ram:CalculatedAmount>
+      ${taxBreakdown.map(tax => `<ram:ApplicableTradeTax>
+        <ram:CalculatedAmount>${tax.taxAmount.toFixed(2)}</ram:CalculatedAmount>
         <ram:TypeCode>VAT</ram:TypeCode>
-        <ram:BasisAmount>${invoice.subtotal.toFixed(2)}</ram:BasisAmount>
+        <ram:BasisAmount>${tax.basisAmount.toFixed(2)}</ram:BasisAmount>
         <ram:CategoryCode>S</ram:CategoryCode>
-        <ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>
-      </ram:ApplicableTradeTax>
+        <ram:RateApplicablePercent>${tax.taxRate.toFixed(2)}</ram:RateApplicablePercent>
+      </ram:ApplicableTradeTax>`).join('\n      ')}
       <ram:SpecifiedTradePaymentTerms>
+        ${invoice.paymentTerms ? `<ram:Description>${this.escapeXml(invoice.paymentTerms)}</ram:Description>` : ''}
         <ram:DueDateDateTime>
           <udt:DateTimeString format="102">${this.formatDateForXml(invoice.dueDate)}</udt:DateTimeString>
         </ram:DueDateDateTime>
       </ram:SpecifiedTradePaymentTerms>
+      ${invoice.notes ? `<ram:IncludedNote>
+        <ram:Content>${this.escapeXml(invoice.notes)}</ram:Content>
+      </ram:IncludedNote>` : ''}
       <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
         <ram:LineTotalAmount>${invoice.subtotal.toFixed(2)}</ram:LineTotalAmount>
         <ram:TaxBasisTotalAmount>${invoice.subtotal.toFixed(2)}</ram:TaxBasisTotalAmount>
@@ -331,6 +358,27 @@ export class ZugferdService {
       'Liter': 'LTR',
     };
     return unitMapping[unit] || 'C62';
+  }
+
+  private calculateTaxBreakdown(items: Array<{ taxRate: number; subtotal: number; taxAmount: number }>): Array<{
+    taxRate: number;
+    basisAmount: number;
+    taxAmount: number;
+  }> {
+    const taxMap = new Map<number, { basisAmount: number; taxAmount: number }>();
+
+    for (const item of items) {
+      const existing = taxMap.get(item.taxRate) || { basisAmount: 0, taxAmount: 0 };
+      taxMap.set(item.taxRate, {
+        basisAmount: existing.basisAmount + item.subtotal,
+        taxAmount: existing.taxAmount + item.taxAmount,
+      });
+    }
+
+    return Array.from(taxMap.entries()).map(([taxRate, amounts]) => ({
+      taxRate,
+      ...amounts,
+    }));
   }
 }
 
