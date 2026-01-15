@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Search, Filter, FileText, Download, Trash2, Eye, ArrowLeft, MoreHorizontal, Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus, Search, Filter, FileText, Download, Trash2, Eye, ArrowLeft, ArrowRightLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,16 +31,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Invoice, InvoiceStatus } from '@/types';
-import { invoicesApi } from '@/lib/api';
-import { XmlImportDialog } from '@/components/invoice/xml-import-dialog';
+import { Quote, QuoteStatus } from '@/types';
+import { quotesApi } from '@/lib/api';
 
-const statusConfig: Record<InvoiceStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+const statusConfig: Record<QuoteStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   draft: { label: 'Entwurf', variant: 'secondary' },
   sent: { label: 'Gesendet', variant: 'default' },
-  paid: { label: 'Bezahlt', variant: 'outline' },
-  overdue: { label: 'Überfällig', variant: 'destructive' },
-  cancelled: { label: 'Storniert', variant: 'secondary' },
+  accepted: { label: 'Angenommen', variant: 'outline' },
+  rejected: { label: 'Abgelehnt', variant: 'destructive' },
+  expired: { label: 'Abgelaufen', variant: 'secondary' },
+  converted: { label: 'Umgewandelt', variant: 'outline' },
 };
 
 function formatCurrency(amount: number): string {
@@ -53,15 +54,19 @@ function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('de-DE');
 }
 
-export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+export default function QuotesPage() {
+  const router = useRouter();
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; invoice: Invoice | null }>({
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; quote: Quote | null }>({
     open: false,
-    invoice: null,
+    quote: null,
+  });
+  const [convertDialog, setConvertDialog] = useState<{ open: boolean; quote: Quote | null }>({
+    open: false,
+    quote: null,
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -70,70 +75,97 @@ export default function InvoicesPage() {
     totalPages: 0,
   });
 
-  const loadInvoices = async () => {
+  const loadQuotes = async () => {
     setLoading(true);
     try {
-      const response = await invoicesApi.getAll({
+      const response = await quotesApi.getAll({
         page: pagination.page,
         limit: pagination.limit,
         search: search || undefined,
-        status: statusFilter !== 'all' ? (statusFilter as InvoiceStatus) : undefined,
+        status: statusFilter !== 'all' ? (statusFilter as QuoteStatus) : undefined,
       });
 
       if (response.success && response.data) {
-        setInvoices(response.data);
+        setQuotes(response.data);
         if (response.pagination) {
           setPagination(response.pagination);
         }
       }
     } catch (error) {
-      console.error('Error loading invoices:', error);
+      console.error('Error loading quotes:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadInvoices();
+    loadQuotes();
   }, [pagination.page, statusFilter]);
 
   const handleSearch = () => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    loadInvoices();
+    loadQuotes();
   };
 
   const handleDelete = async () => {
-    if (!deleteDialog.invoice) return;
+    if (!deleteDialog.quote) return;
 
     try {
-      const response = await invoicesApi.delete(deleteDialog.invoice.id);
+      const response = await quotesApi.delete(deleteDialog.quote.id);
       if (response.success) {
-        loadInvoices();
+        loadQuotes();
       }
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      console.error('Error deleting quote:', error);
     } finally {
-      setDeleteDialog({ open: false, invoice: null });
+      setDeleteDialog({ open: false, quote: null });
     }
   };
 
-  const handleDownloadPdf = async (invoice: Invoice) => {
+  const handleDownloadPdf = async (quote: Quote) => {
     try {
-      await invoicesApi.downloadPdf(invoice.id, invoice.invoiceNumber);
+      await quotesApi.downloadPdf(quote.id, quote.quoteNumber);
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
   };
 
-  const handleStatusChange = async (invoice: Invoice, newStatus: InvoiceStatus) => {
+  const handleStatusChange = async (quote: Quote, newStatus: QuoteStatus) => {
     try {
-      const response = await invoicesApi.updateStatus(invoice.id, newStatus);
+      const response = await quotesApi.updateStatus(quote.id, newStatus);
       if (response.success) {
-        loadInvoices();
+        loadQuotes();
       }
     } catch (error) {
       console.error('Error updating status:', error);
     }
+  };
+
+  const handleConvertToInvoice = async () => {
+    if (!convertDialog.quote) return;
+
+    try {
+      const response = await quotesApi.convertToInvoice(convertDialog.quote.id);
+      if (response.success && response.data) {
+        router.push(`/invoices/${response.data.invoiceId}`);
+      }
+    } catch (error) {
+      console.error('Error converting quote:', error);
+    } finally {
+      setConvertDialog({ open: false, quote: null });
+    }
+  };
+
+  const getAvailableStatuses = (currentStatus: QuoteStatus): QuoteStatus[] => {
+    const transitions: Record<QuoteStatus, QuoteStatus[]> = {
+      draft: ['sent'],
+      sent: ['accepted', 'rejected', 'expired'],
+      accepted: [],
+      rejected: [],
+      expired: [],
+      converted: [],
+    };
+    return transitions[currentStatus];
   };
 
   return (
@@ -146,24 +178,17 @@ export default function InvoicesPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Rechnungen</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Angebote</h1>
             <p className="text-muted-foreground">
-              Verwalten Sie Ihre Rechnungen und erstellen Sie neue.
+              Verwalten Sie Ihre Angebote und erstellen Sie neue.
             </p>
           </div>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setImportDialogOpen(true)}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            XML Importieren
-          </Button>
-          <Link href="/invoices/new">
+          <Link href="/quotes/new">
             <Button className="gradient-primary text-white">
               <Plus className="mr-2 h-4 w-4" />
-              Neue Rechnung
+              Neues Angebot
             </Button>
           </Link>
         </div>
@@ -172,7 +197,7 @@ export default function InvoicesPage() {
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle>Alle Rechnungen</CardTitle>
+            <CardTitle>Alle Angebote</CardTitle>
             <div className="flex flex-col gap-2 sm:flex-row">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -193,9 +218,10 @@ export default function InvoicesPage() {
                   <SelectItem value="all">Alle Status</SelectItem>
                   <SelectItem value="draft">Entwurf</SelectItem>
                   <SelectItem value="sent">Gesendet</SelectItem>
-                  <SelectItem value="paid">Bezahlt</SelectItem>
-                  <SelectItem value="overdue">Überfällig</SelectItem>
-                  <SelectItem value="cancelled">Storniert</SelectItem>
+                  <SelectItem value="accepted">Angenommen</SelectItem>
+                  <SelectItem value="rejected">Abgelehnt</SelectItem>
+                  <SelectItem value="expired">Abgelaufen</SelectItem>
+                  <SelectItem value="converted">Umgewandelt</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -206,17 +232,17 @@ export default function InvoicesPage() {
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
-          ) : invoices.length === 0 ? (
+          ) : quotes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold">Keine Rechnungen gefunden</h3>
+              <h3 className="text-lg font-semibold">Keine Angebote gefunden</h3>
               <p className="text-muted-foreground mb-4">
-                Erstellen Sie Ihre erste Rechnung, um loszulegen.
+                Erstellen Sie Ihr erstes Angebot, um loszulegen.
               </p>
-              <Link href="/invoices/new">
+              <Link href="/quotes/new">
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
-                  Neue Rechnung
+                  Neues Angebot
                 </Button>
               </Link>
             </div>
@@ -225,47 +251,56 @@ export default function InvoicesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Rechnungsnr.</TableHead>
+                    <TableHead>Angebotsnr.</TableHead>
                     <TableHead>Kunde</TableHead>
                     <TableHead>Datum</TableHead>
-                    <TableHead>Fällig</TableHead>
+                    <TableHead>Gültig bis</TableHead>
                     <TableHead>Betrag</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
+                  {quotes.map((quote) => (
+                    <TableRow key={quote.id}>
                       <TableCell className="font-medium">
-                        {invoice.invoiceNumber}
+                        {quote.quoteNumber}
                       </TableCell>
-                      <TableCell>{invoice.customer?.companyName || '-'}</TableCell>
-                      <TableCell>{formatDate(invoice.issueDate)}</TableCell>
-                      <TableCell>{formatDate(invoice.dueDate)}</TableCell>
-                      <TableCell>{formatCurrency(invoice.total)}</TableCell>
+                      <TableCell>{quote.customer?.companyName || '-'}</TableCell>
+                      <TableCell>{formatDate(quote.issueDate)}</TableCell>
+                      <TableCell>{formatDate(quote.validUntil)}</TableCell>
+                      <TableCell>{formatCurrency(quote.total)}</TableCell>
                       <TableCell>
-                        <Select
-                          value={invoice.status}
-                          onValueChange={(value) => handleStatusChange(invoice, value as InvoiceStatus)}
-                        >
-                          <SelectTrigger className="w-[130px] h-8">
-                            <Badge variant={statusConfig[invoice.status].variant}>
-                              {statusConfig[invoice.status].label}
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="draft">Entwurf</SelectItem>
-                            <SelectItem value="sent">Gesendet</SelectItem>
-                            <SelectItem value="paid">Bezahlt</SelectItem>
-                            <SelectItem value="overdue">Überfällig</SelectItem>
-                            <SelectItem value="cancelled">Storniert</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        {getAvailableStatuses(quote.status).length > 0 ? (
+                          <Select
+                            value={quote.status}
+                            onValueChange={(value) => handleStatusChange(quote, value as QuoteStatus)}
+                          >
+                            <SelectTrigger className="w-[140px] h-8">
+                              <Badge variant={statusConfig[quote.status].variant}>
+                                {statusConfig[quote.status].label}
+                              </Badge>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={quote.status} disabled>
+                                {statusConfig[quote.status].label}
+                              </SelectItem>
+                              {getAvailableStatuses(quote.status).map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  {statusConfig[status].label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Badge variant={statusConfig[quote.status].variant}>
+                            {statusConfig[quote.status].label}
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Link href={`/invoices/${invoice.id}`}>
+                          <Link href={`/quotes/${quote.id}`}>
                             <Button variant="ghost" size="icon">
                               <Eye className="h-4 w-4" />
                             </Button>
@@ -273,15 +308,25 @@ export default function InvoicesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleDownloadPdf(invoice)}
+                            onClick={() => handleDownloadPdf(quote)}
                           >
                             <Download className="h-4 w-4" />
                           </Button>
-                          {invoice.status === 'draft' && (
+                          {quote.status === 'accepted' && !quote.convertedInvoiceId && (
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setDeleteDialog({ open: true, invoice })}
+                              onClick={() => setConvertDialog({ open: true, quote })}
+                              title="In Rechnung umwandeln"
+                            >
+                              <ArrowRightLeft className="h-4 w-4 text-green-600" />
+                            </Button>
+                          )}
+                          {quote.status === 'draft' && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeleteDialog({ open: true, quote })}
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
@@ -323,17 +368,17 @@ export default function InvoicesPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, invoice: null })}>
+      <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, quote: null })}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Rechnung löschen</DialogTitle>
+            <DialogTitle>Angebot löschen</DialogTitle>
             <DialogDescription>
-              Möchten Sie die Rechnung {deleteDialog.invoice?.invoiceNumber} wirklich löschen?
+              Möchten Sie das Angebot {deleteDialog.quote?.quoteNumber} wirklich löschen?
               Diese Aktion kann nicht rückgängig gemacht werden.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialog({ open: false, invoice: null })}>
+            <Button variant="outline" onClick={() => setDeleteDialog({ open: false, quote: null })}>
               Abbrechen
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -343,13 +388,25 @@ export default function InvoicesPage() {
         </DialogContent>
       </Dialog>
 
-      <XmlImportDialog
-        open={importDialogOpen}
-        onOpenChange={setImportDialogOpen}
-        onImportComplete={() => {
-          loadInvoices();
-        }}
-      />
+      <Dialog open={convertDialog.open} onOpenChange={(open) => setConvertDialog({ open, quote: null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>In Rechnung umwandeln</DialogTitle>
+            <DialogDescription>
+              Möchten Sie das Angebot {convertDialog.quote?.quoteNumber} in eine Rechnung umwandeln?
+              Eine neue Rechnung wird mit den Daten des Angebots erstellt.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConvertDialog({ open: false, quote: null })}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleConvertToInvoice}>
+              Umwandeln
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

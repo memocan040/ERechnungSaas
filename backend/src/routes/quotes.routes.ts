@@ -1,25 +1,21 @@
 import { Router, Response } from 'express';
-import { invoiceService } from '../services/invoice.service';
-import { zugferdService } from '../services/zugferd.service';
+import { quoteService } from '../services/quote.service';
+import { quotePdfService } from '../services/quote-pdf.service';
 import { authenticate } from '../middleware/auth';
 import { validate, schemas } from '../middleware/validation';
 import { asyncHandler } from '../middleware/errorHandler';
 import { AuthRequest, ApiResponse } from '../types';
-import xmlImportRoutes from './xml-import.routes';
 
 const router = Router();
 
 // All routes require authentication
 router.use(authenticate);
 
-// Mount XML import routes
-router.use('/import', xmlImportRoutes);
-
-// Get invoice statistics
+// Get quote statistics
 router.get(
   '/stats',
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
-    const stats = await invoiceService.getStats(req.user!.id);
+    const stats = await quoteService.getStats(req.user!.id);
 
     res.json({
       success: true,
@@ -28,13 +24,13 @@ router.get(
   })
 );
 
-// Get all invoices
+// Get all quotes
 router.get(
   '/',
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
     const { search, status, customerId, startDate, endDate, page, limit, sortBy, sortOrder } = req.query;
 
-    const result = await invoiceService.findAll(req.user!.id, {
+    const result = await quoteService.findAll(req.user!.id, {
       search: search as string,
       status: status as string,
       customerId: customerId as string,
@@ -48,7 +44,7 @@ router.get(
 
     res.json({
       success: true,
-      data: result.invoices,
+      data: result.quotes,
       pagination: {
         page: page ? parseInt(page as string, 10) : 1,
         limit: limit ? parseInt(limit as string, 10) : 10,
@@ -59,84 +55,99 @@ router.get(
   })
 );
 
-// Get invoice by ID
+// Get quote by ID
 router.get(
   '/:id',
   validate(schemas.idParam),
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
-    const invoice = await invoiceService.findById(req.user!.id, req.params.id);
+    const quote = await quoteService.findById(req.user!.id, req.params.id);
 
     res.json({
       success: true,
-      data: invoice,
+      data: quote,
     });
   })
 );
 
-// Create invoice
+// Create quote
 router.post(
   '/',
-  validate(schemas.createInvoice),
+  validate(schemas.createQuote),
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
-    const invoice = await invoiceService.create(req.user!.id, req.body);
+    const quote = await quoteService.create(req.user!.id, req.body);
 
     res.status(201).json({
       success: true,
-      data: invoice,
-      message: 'Invoice created successfully',
+      data: quote,
+      message: 'Angebot erfolgreich erstellt',
     });
   })
 );
 
-// Update invoice
+// Update quote
 router.put(
   '/:id',
-  validate(schemas.updateInvoice),
+  validate(schemas.updateQuote),
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
-    const invoice = await invoiceService.update(req.user!.id, req.params.id, req.body);
+    const quote = await quoteService.update(req.user!.id, req.params.id, req.body);
 
     res.json({
       success: true,
-      data: invoice,
-      message: 'Invoice updated successfully',
+      data: quote,
+      message: 'Angebot erfolgreich aktualisiert',
     });
   })
 );
 
-// Update invoice status
+// Update quote status
 router.patch(
   '/:id/status',
   validate(schemas.idParam),
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
     const { status } = req.body;
 
-    if (!['draft', 'sent', 'paid', 'overdue', 'cancelled'].includes(status)) {
+    if (!['draft', 'sent', 'accepted', 'rejected', 'expired', 'converted'].includes(status)) {
       return res.status(400).json({
         success: false,
         error: 'Invalid status',
       });
     }
 
-    const invoice = await invoiceService.updateStatus(req.user!.id, req.params.id, status);
+    const quote = await quoteService.updateStatus(req.user!.id, req.params.id, status);
 
     res.json({
       success: true,
-      data: invoice,
-      message: 'Invoice status updated successfully',
+      data: quote,
+      message: 'Angebotsstatus erfolgreich aktualisiert',
     });
   })
 );
 
-// Delete invoice
+// Convert quote to invoice
+router.post(
+  '/:id/convert',
+  validate(schemas.idParam),
+  asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
+    const result = await quoteService.convertToInvoice(req.user!.id, req.params.id);
+
+    res.json({
+      success: true,
+      data: result,
+      message: 'Angebot erfolgreich in Rechnung umgewandelt',
+    });
+  })
+);
+
+// Delete quote
 router.delete(
   '/:id',
   validate(schemas.idParam),
   asyncHandler(async (req: AuthRequest, res: Response<ApiResponse>) => {
-    await invoiceService.delete(req.user!.id, req.params.id);
+    await quoteService.delete(req.user!.id, req.params.id);
 
     res.json({
       success: true,
-      message: 'Invoice deleted successfully',
+      message: 'Angebot erfolgreich gelöscht',
     });
   })
 );
@@ -146,26 +157,12 @@ router.get(
   '/:id/pdf',
   validate(schemas.idParam),
   asyncHandler(async (req: AuthRequest, res: Response) => {
-    const invoice = await invoiceService.findById(req.user!.id, req.params.id);
-    const pdfBuffer = await zugferdService.generatePdf(req.user!.id, invoice);
+    const quote = await quoteService.findById(req.user!.id, req.params.id);
+    const pdfBuffer = await quotePdfService.generatePdf(req.user!.id, quote);
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${invoice.invoiceNumber}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${quote.quoteNumber}.pdf"`);
     res.send(pdfBuffer);
-  })
-);
-
-// Generate ZUGFeRD XML
-router.get(
-  '/:id/xml',
-  validate(schemas.idParam),
-  asyncHandler(async (req: AuthRequest, res: Response) => {
-    const invoice = await invoiceService.findById(req.user!.id, req.params.id);
-    const xml = await zugferdService.generateXml(req.user!.id, invoice);
-
-    res.setHeader('Content-Type', 'application/xml');
-    res.setHeader('Content-Disposition', `attachment; filename="${invoice.invoiceNumber}.xml"`);
-    res.send(xml);
   })
 );
 

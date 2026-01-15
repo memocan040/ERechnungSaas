@@ -30,14 +30,17 @@ export class SettingsService {
     const result = await query(
       `INSERT INTO user_settings (
         user_id, default_tax_rate, default_payment_days, invoice_prefix,
+        quote_prefix, default_quote_validity_days,
         currency, language, email_notifications
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *`,
       [
         userId,
         data.defaultTaxRate ?? 19,
         data.defaultPaymentDays ?? 14,
         data.invoicePrefix ?? 'RE-',
+        data.quotePrefix ?? 'AN-',
+        data.defaultQuoteValidityDays ?? 30,
         data.currency ?? 'EUR',
         data.language ?? 'de',
         data.emailNotifications ?? true,
@@ -56,6 +59,8 @@ export class SettingsService {
       'defaultTaxRate',
       'defaultPaymentDays',
       'invoicePrefix',
+      'quotePrefix',
+      'defaultQuoteValidityDays',
       'currency',
       'language',
       'emailNotifications',
@@ -65,6 +70,8 @@ export class SettingsService {
       defaultTaxRate: 'default_tax_rate',
       defaultPaymentDays: 'default_payment_days',
       invoicePrefix: 'invoice_prefix',
+      quotePrefix: 'quote_prefix',
+      defaultQuoteValidityDays: 'default_quote_validity_days',
       emailNotifications: 'email_notifications',
     };
 
@@ -118,6 +125,9 @@ export class SettingsService {
       defaultPaymentDays: row.default_payment_days as number,
       invoicePrefix: row.invoice_prefix as string,
       nextInvoiceNumber: row.next_invoice_number as number,
+      quotePrefix: (row.quote_prefix as string) || 'AN-',
+      nextQuoteNumber: (row.next_quote_number as number) || 1,
+      defaultQuoteValidityDays: (row.default_quote_validity_days as number) || 30,
       currency: row.currency as string,
       language: row.language as string,
       emailNotifications: row.email_notifications as boolean,

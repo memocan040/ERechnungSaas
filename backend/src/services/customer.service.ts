@@ -197,6 +197,47 @@ export class CustomerService {
     };
   }
 
+  /**
+   * Find customer by VAT ID or company name + postal code (for XML import matching)
+   */
+  async findByVatIdOrName(
+    userId: string,
+    vatId?: string,
+    companyName?: string,
+    postalCode?: string
+  ): Promise<Customer | null> {
+    // Try to match by VAT ID first (most reliable)
+    if (vatId) {
+      const result = await query(
+        'SELECT * FROM customers WHERE user_id = $1 AND vat_id = $2 LIMIT 1',
+        [userId, vatId]
+      );
+      if (result.rows.length > 0) {
+        return this.mapToCustomer(result.rows[0]);
+      }
+    }
+
+    // Try to match by company name + postal code
+    if (companyName && postalCode) {
+      const result = await query(
+        'SELECT * FROM customers WHERE user_id = $1 AND company_name = $2 AND postal_code = $3 LIMIT 1',
+        [userId, companyName, postalCode]
+      );
+      if (result.rows.length > 0) {
+        return this.mapToCustomer(result.rows[0]);
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Create customer from XML import data
+   */
+  async createFromImport(userId: string, data: Partial<Customer>): Promise<Customer> {
+    return this.create(userId, data);
+  }
+
   private mapToCustomer(row: Record<string, unknown>): Customer {
     return {
       id: row.id as string,

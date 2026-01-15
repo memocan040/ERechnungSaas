@@ -101,6 +101,9 @@ export interface UserSettings {
   defaultPaymentDays: number;
   invoicePrefix: string;
   nextInvoiceNumber: number;
+  quotePrefix: string;
+  nextQuoteNumber: number;
+  defaultQuoteValidityDays: number;
   currency: string;
   language: string;
   emailNotifications: boolean;
@@ -114,6 +117,71 @@ export interface Session {
   refreshToken: string;
   expiresAt: Date;
   createdAt: Date;
+}
+
+export interface InvoiceDesignSettings {
+  id: string;
+  userId: string;
+  templateName: 'modern' | 'classic' | 'minimal' | 'professional' | 'creative';
+  primaryColor: string;
+  secondaryColor: string;
+  textColor: string;
+  backgroundColor: string;
+  tableHeaderBg: string;
+  accentColor: string;
+  logoPosition: 'left' | 'center' | 'right';
+  logoSize: 'small' | 'medium' | 'large';
+  showLogo: boolean;
+  fontFamily: 'Helvetica' | 'Times-Roman' | 'Courier';
+  headerFontSize: number;
+  bodyFontSize: number;
+  footerFontSize: number;
+  pageMarginTop: number;
+  pageMarginBottom: number;
+  pageMarginLeft: number;
+  pageMarginRight: number;
+  sectionSpacing: number;
+  showCompanyLogo: boolean;
+  showBankInfo: boolean;
+  showFooterInfo: boolean;
+  companyInfoPosition: 'left' | 'right';
+  invoiceInfoPosition: 'left' | 'right';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UpdateInvoiceDesignData {
+  templateName?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  textColor?: string;
+  backgroundColor?: string;
+  tableHeaderBg?: string;
+  accentColor?: string;
+  logoPosition?: string;
+  logoSize?: string;
+  showLogo?: boolean;
+  fontFamily?: string;
+  headerFontSize?: number;
+  bodyFontSize?: number;
+  footerFontSize?: number;
+  pageMarginTop?: number;
+  pageMarginBottom?: number;
+  pageMarginLeft?: number;
+  pageMarginRight?: number;
+  sectionSpacing?: number;
+  showCompanyLogo?: boolean;
+  showBankInfo?: boolean;
+  showFooterInfo?: boolean;
+  companyInfoPosition?: string;
+  invoiceInfoPosition?: string;
+}
+
+export interface TemplatePreset {
+  name: string;
+  displayName: string;
+  description: string;
+  settings: Partial<InvoiceDesignSettings>;
 }
 
 export interface AuthRequest extends Request {
@@ -516,4 +584,90 @@ export interface UpdateExpenseData {
     accountId?: string;
     costCenterId?: string;
   }>;
+}
+
+// ============================================
+// QUOTES MODULE TYPES
+// ============================================
+
+export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired' | 'converted';
+
+export interface QuoteItem {
+  id: string;
+  quoteId: string;
+  position: number;
+  description: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  taxRate: number;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+}
+
+export interface Quote {
+  id: string;
+  userId: string;
+  customerId: string;
+  quoteNumber: string;
+  status: QuoteStatus;
+  issueDate: Date;
+  validUntil: Date;
+  convertedDate?: Date;
+  convertedInvoiceId?: string;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  currency: string;
+  notes?: string;
+  termsConditions?: string;
+  pdfUrl?: string;
+  items?: QuoteItem[];
+  customer?: Customer;
+  company?: Company;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateQuoteData {
+  customerId: string;
+  issueDate: string;
+  validUntil: string;
+  notes?: string;
+  termsConditions?: string;
+  items: Array<{
+    description: string;
+    quantity: number;
+    unit?: string;
+    unitPrice: number;
+    taxRate?: number;
+  }>;
+}
+
+export interface UpdateQuoteData {
+  customerId?: string;
+  issueDate?: string;
+  validUntil?: string;
+  notes?: string;
+  termsConditions?: string;
+  items?: Array<{
+    description: string;
+    quantity: number;
+    unit?: string;
+    unitPrice: number;
+    taxRate?: number;
+  }>;
+}
+
+export interface QuoteStats {
+  totalQuotes: number;
+  pendingValue: number;
+  acceptedValue: number;
+  conversionRate: number;
+  draftQuotes: number;
+  sentQuotes: number;
+  acceptedQuotes: number;
+  rejectedQuotes: number;
+  expiredQuotes: number;
 }

@@ -117,6 +117,51 @@ CREATE TABLE user_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Invoice design settings table
+CREATE TABLE invoice_design_settings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Template
+    template_name VARCHAR(50) NOT NULL DEFAULT 'modern' CHECK (template_name IN ('modern', 'classic', 'minimal', 'professional', 'creative')),
+
+    -- Farben (Hex-Codes)
+    primary_color VARCHAR(7) DEFAULT '#2563eb',
+    secondary_color VARCHAR(7) DEFAULT '#64748b',
+    text_color VARCHAR(7) DEFAULT '#000000',
+    background_color VARCHAR(7) DEFAULT '#ffffff',
+    table_header_bg VARCHAR(7) DEFAULT '#f0f0f0',
+    accent_color VARCHAR(7) DEFAULT '#0ea5e9',
+
+    -- Logo-Einstellungen
+    logo_position VARCHAR(20) DEFAULT 'left' CHECK (logo_position IN ('left', 'center', 'right')),
+    logo_size VARCHAR(20) DEFAULT 'medium' CHECK (logo_size IN ('small', 'medium', 'large')),
+    show_logo BOOLEAN DEFAULT true,
+
+    -- Schrift-Einstellungen
+    font_family VARCHAR(50) DEFAULT 'Helvetica' CHECK (font_family IN ('Helvetica', 'Times-Roman', 'Courier')),
+    header_font_size INTEGER DEFAULT 24 CHECK (header_font_size BETWEEN 16 AND 36),
+    body_font_size INTEGER DEFAULT 10 CHECK (body_font_size BETWEEN 8 AND 14),
+    footer_font_size INTEGER DEFAULT 8 CHECK (footer_font_size BETWEEN 6 AND 12),
+
+    -- Layout (in Points)
+    page_margin_top INTEGER DEFAULT 50 CHECK (page_margin_top BETWEEN 20 AND 100),
+    page_margin_bottom INTEGER DEFAULT 50 CHECK (page_margin_bottom BETWEEN 20 AND 100),
+    page_margin_left INTEGER DEFAULT 50 CHECK (page_margin_left BETWEEN 20 AND 100),
+    page_margin_right INTEGER DEFAULT 50 CHECK (page_margin_right BETWEEN 20 AND 100),
+    section_spacing INTEGER DEFAULT 20 CHECK (section_spacing BETWEEN 10 AND 50),
+
+    -- Sichtbarkeits-Toggles
+    show_company_logo BOOLEAN DEFAULT true,
+    show_bank_info BOOLEAN DEFAULT true,
+    show_footer_info BOOLEAN DEFAULT true,
+    company_info_position VARCHAR(20) DEFAULT 'left' CHECK (company_info_position IN ('left', 'right')),
+    invoice_info_position VARCHAR(20) DEFAULT 'right' CHECK (invoice_info_position IN ('left', 'right')),
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Sessions table for refresh tokens
 CREATE TABLE sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -455,3 +500,63 @@ CREATE TRIGGER update_accounting_settings_updated_at BEFORE UPDATE ON accounting
 CREATE TRIGGER update_vendors_updated_at BEFORE UPDATE ON vendors FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_expense_categories_updated_at BEFORE UPDATE ON expense_categories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_expenses_updated_at BEFORE UPDATE ON expenses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- QUOTES MODULE TABLES
+-- ============================================
+
+-- Quotes table (Angebote)
+CREATE TABLE quotes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE RESTRICT,
+    quote_number VARCHAR(50) NOT NULL,
+    status VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'accepted', 'rejected', 'expired', 'converted')),
+    issue_date DATE NOT NULL,
+    valid_until DATE NOT NULL,
+    converted_date DATE,
+    converted_invoice_id UUID REFERENCES invoices(id),
+    subtotal DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    tax_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    total DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    currency VARCHAR(3) DEFAULT 'EUR',
+    notes TEXT,
+    terms_conditions TEXT,
+    pdf_url VARCHAR(500),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, quote_number)
+);
+
+-- Quote items table
+CREATE TABLE quote_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    quote_id UUID NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
+    position INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    quantity DECIMAL(10, 3) NOT NULL DEFAULT 1,
+    unit VARCHAR(20) DEFAULT 'Stück',
+    unit_price DECIMAL(12, 2) NOT NULL,
+    tax_rate DECIMAL(5, 2) DEFAULT 19.00,
+    subtotal DECIMAL(12, 2) NOT NULL,
+    tax_amount DECIMAL(12, 2) NOT NULL,
+    total DECIMAL(12, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Quotes indexes
+CREATE INDEX idx_quotes_user_id ON quotes(user_id);
+CREATE INDEX idx_quotes_customer_id ON quotes(customer_id);
+CREATE INDEX idx_quotes_status ON quotes(status);
+CREATE INDEX idx_quotes_issue_date ON quotes(issue_date);
+CREATE INDEX idx_quotes_valid_until ON quotes(valid_until);
+CREATE INDEX idx_quote_items_quote_id ON quote_items(quote_id);
+
+-- Quotes trigger
+CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON quotes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Add quote settings to user_settings (run as ALTER for existing databases)
+-- For new installations, these columns should be added to the user_settings CREATE TABLE
+ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS quote_prefix VARCHAR(20) DEFAULT 'AN-';
+ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS next_quote_number INTEGER DEFAULT 1;
+ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS default_quote_validity_days INTEGER DEFAULT 30;

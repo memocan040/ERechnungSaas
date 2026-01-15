@@ -407,3 +407,65 @@ export interface CreateExpenseData {
 }
 
 export type UpdateExpenseData = Partial<CreateExpenseData>;
+
+// ============================================
+// QUOTES MODULE TYPES
+// ============================================
+
+export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired' | 'converted';
+
+export interface QuoteItem {
+  id?: string;
+  quoteId?: string;
+  position?: number;
+  description: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  taxRate: number;
+  subtotal?: number;
+  taxAmount?: number;
+  total?: number;
+}
+
+export interface Quote {
+  id: string;
+  userId: string;
+  customerId: string;
+  quoteNumber: string;
+  status: QuoteStatus;
+  issueDate: string;
+  validUntil: string;
+  convertedDate?: string;
+  convertedInvoiceId?: string;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  currency: string;
+  notes?: string;
+  termsConditions?: string;
+  items?: QuoteItem[];
+  customer?: Customer;
+  company?: Company;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QuoteFilters extends PaginationParams {
+  status?: QuoteStatus;
+  customerId?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface QuoteStats {
+  totalQuotes: number;
+  pendingValue: number;
+  acceptedValue: number;
+  conversionRate: number;
+  draftQuotes: number;
+  sentQuotes: number;
+  acceptedQuotes: number;
+  rejectedQuotes: number;
+  expiredQuotes: number;
+}

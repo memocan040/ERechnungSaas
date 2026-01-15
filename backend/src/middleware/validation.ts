@@ -154,6 +154,45 @@ export const schemas = {
     }),
   }),
 
+  // Quote schemas
+  createQuote: z.object({
+    body: z.object({
+      customerId: z.string().uuid('Invalid customer ID'),
+      issueDate: z.string(),
+      validUntil: z.string(),
+      notes: z.string().optional(),
+      termsConditions: z.string().optional(),
+      items: z.array(z.object({
+        description: z.string().min(1, 'Description is required'),
+        quantity: z.number().positive('Quantity must be positive'),
+        unit: z.string().optional(),
+        unitPrice: z.number().min(0, 'Unit price must be non-negative'),
+        taxRate: z.number().min(0).max(100).optional(),
+      })).min(1, 'At least one item is required'),
+    }),
+  }),
+
+  updateQuote: z.object({
+    params: z.object({
+      id: z.string().uuid('Invalid quote ID'),
+    }),
+    body: z.object({
+      customerId: z.string().uuid().optional(),
+      issueDate: z.string().optional(),
+      validUntil: z.string().optional(),
+      notes: z.string().optional(),
+      termsConditions: z.string().optional(),
+      items: z.array(z.object({
+        id: z.string().uuid().optional(),
+        description: z.string().min(1),
+        quantity: z.number().positive(),
+        unit: z.string().optional(),
+        unitPrice: z.number().min(0),
+        taxRate: z.number().min(0).max(100).optional(),
+      })).optional(),
+    }),
+  }),
+
   // Common schemas
   idParam: z.object({
     params: z.object({

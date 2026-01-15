@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, Save, Eye } from 'lucide-react';
+import { Plus, Trash2, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,26 +15,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Customer, InvoiceItem, Company } from '@/types';
-import { invoicesApi, settingsApi, companyApi } from '@/lib/api';
-import { InvoicePreview } from '@/components/invoice/invoice-preview';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Quote, Customer, Company } from '@/types';
+import { quotesApi, settingsApi, companyApi } from '@/lib/api';
+import { QuotePreview } from './quote-preview';
 import { CustomerSelector } from '@/components/form/customer-selector';
 
-interface InvoiceItemForm {
+interface QuoteItemForm {
   description: string;
   quantity: number;
   unit: string;
   unitPrice: number;
   taxRate: number;
+}
+
+interface QuoteFormProps {
+  initialData?: Quote;
+  isEditing?: boolean;
 }
 
 function formatCurrency(amount: number): string {
@@ -45,56 +40,77 @@ function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export default function NewInvoicePage() {
+export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
-  const [dueDate, setDueDate] = useState('');
-  const [notes, setNotes] = useState('');
-  const [paymentTerms, setPaymentTerms] = useState('');
-  const [company, setCompany] = useState<Company | undefined>(undefined);
-  const [items, setItems] = useState<InvoiceItemForm[]>([
-    { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 },
-  ]);
+  
+  // Form State
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>(initialData?.customerId || '');
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(initialData?.customer);
+  const [issueDate, setIssueDate] = useState(
+    initialData?.issueDate 
+      ? new Date(initialData.issueDate).toISOString().split('T')[0] 
+      : new Date().toISOString().split('T')[0]
+  );
+  const [validUntil, setValidUntil] = useState(
+    initialData?.validUntil 
+      ? new Date(initialData.validUntil).toISOString().split('T')[0] 
+      : ''
+  );
+  const [notes, setNotes] = useState(initialData?.notes || '');
+  const [termsConditions, setTermsConditions] = useState(initialData?.termsConditions || '');
+  const [company, setCompany] = useState<Company | undefined>(initialData?.company);
+  
+  const [items, setItems] = useState<QuoteItemForm[]>(
+    initialData?.items?.map(item => ({
+      description: item.description,
+      quantity: item.quantity,
+      unit: item.unit,
+      unitPrice: item.unitPrice,
+      taxRate: item.taxRate,
+    })) || [{ description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 }]
+  );
 
   useEffect(() => {
-    loadSettings();
-    loadCompany();
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      const response = await settingsApi.get();
-      if (response.success && response.data) {
-        const settings = response.data;
-        const due = new Date();
-        due.setDate(due.getDate() + settings.defaultPaymentDays);
-        setDueDate(due.toISOString().split('T')[0]);
-        setItems([
-          { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: settings.defaultTaxRate },
-        ]);
+    const loadSettings = async () => {
+      try {
+        const response = await settingsApi.get();
+        if (response.success && response.data) {
+          const settings = response.data;
+          const valid = new Date();
+          valid.setDate(valid.getDate() + 30); // Default 30 days validity
+          setValidUntil(valid.toISOString().split('T')[0]);
+          
+          setItems([
+            { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: settings.defaultTaxRate },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+        const valid = new Date();
+        valid.setDate(valid.getDate() + 30);
+        setValidUntil(valid.toISOString().split('T')[0]);
       }
-    } catch (error) {
-      console.error('Error loading settings:', error);
-      // Set default due date if settings fail
-      const due = new Date();
-      due.setDate(due.getDate() + 14);
-      setDueDate(due.toISOString().split('T')[0]);
-    }
-  };
+    };
 
-  const loadCompany = async () => {
-    try {
-      const response = await companyApi.get();
-      if (response.success && response.data) {
-        setCompany(response.data);
+    const loadCompany = async () => {
+      try {
+        const response = await companyApi.get();
+        if (response.success && response.data) {
+          setCompany(response.data);
+        }
+      } catch (error) {
+        console.error('Error loading company:', error);
       }
-    } catch (error) {
-      console.error('Error loading company:', error);
+    };
+
+    if (!initialData) {
+      loadSettings();
+      loadCompany();
+    } else {
+      if (!company) loadCompany();
     }
-  };
+  }, [initialData, company]);
 
   const handleCustomerChange = (id: string, customer?: Customer) => {
     setSelectedCustomerId(id);
@@ -121,7 +137,7 @@ export default function NewInvoicePage() {
     setItems(newItems);
   };
 
-  const calculateItemTotal = (item: InvoiceItemForm) => {
+  const calculateItemTotal = (item: QuoteItemForm) => {
     const subtotal = item.quantity * item.unitPrice;
     const tax = subtotal * (item.taxRate / 100);
     return subtotal + tax;
@@ -160,12 +176,12 @@ export default function NewInvoicePage() {
     setLoading(true);
 
     try {
-      const response = await invoicesApi.create({
+      const quoteData = {
         customerId: selectedCustomerId,
         issueDate,
-        dueDate,
+        validUntil,
         notes: notes || undefined,
-        paymentTerms: paymentTerms || undefined,
+        termsConditions: termsConditions || undefined,
         items: items.map((item) => ({
           description: item.description,
           quantity: item.quantity,
@@ -173,16 +189,23 @@ export default function NewInvoicePage() {
           unitPrice: item.unitPrice,
           taxRate: item.taxRate,
         })),
-      });
+      };
+
+      let response;
+      if (isEditing && initialData) {
+        response = await quotesApi.update(initialData.id, quoteData);
+      } else {
+        response = await quotesApi.create(quoteData);
+      }
 
       if (response.success && response.data) {
-        router.push(`/invoices/${response.data.id}`);
+        router.push('/quotes'); // Or redirect to view page: `/quotes/${response.data.id}`
       } else {
-        alert(response.error || 'Fehler beim Erstellen der Rechnung');
+        alert(response.error || 'Fehler beim Speichern des Angebots');
       }
     } catch (error) {
-      console.error('Error creating invoice:', error);
-      alert('Fehler beim Erstellen der Rechnung');
+      console.error('Error saving quote:', error);
+      alert('Fehler beim Speichern des Angebots');
     } finally {
       setLoading(false);
     }
@@ -190,44 +213,32 @@ export default function NewInvoicePage() {
 
   const totals = calculateTotals();
   
-  const previewInvoice = {
-    invoiceNumber: 'VORSCHAU',
-    status: 'draft' as const,
+  // Use selectedCustomer from state
+  const previewCustomer = selectedCustomer || (initialData?.customerId === selectedCustomerId ? initialData?.customer : undefined);
+
+  const previewQuote = {
+    quoteNumber: initialData?.quoteNumber || 'VORSCHAU',
+    status: (initialData?.status || 'draft') as Quote['status'],
     issueDate,
-    dueDate,
+    validUntil,
     items: items,
     subtotal: totals.subtotal,
     taxAmount: totals.taxAmount,
     total: totals.total,
-    customer: selectedCustomer,
+    customer: previewCustomer,
     company: company,
     notes,
-    paymentTerms
+    termsConditions
   };
 
   return (
-    <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col">
-      <div className="flex items-center gap-4 flex-none">
-        <Link href="/invoices">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Neue Rechnung</h1>
-          <p className="text-muted-foreground">
-            Erstellen Sie eine neue Rechnung.
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-1 min-h-0 grid lg:grid-cols-2 gap-6">
+    <div className="flex-1 min-h-0 grid lg:grid-cols-2 gap-6">
         {/* Left Column - Form */}
         <div className="overflow-y-auto pr-2 pb-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Rechnungsdetails</CardTitle>
+                <CardTitle>Angebotsdetails</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <CustomerSelector 
@@ -237,7 +248,7 @@ export default function NewInvoicePage() {
                 />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="issueDate">Rechnungsdatum *</Label>
+                    <Label htmlFor="issueDate">Angebotsdatum *</Label>
                     <Input
                       id="issueDate"
                       type="date"
@@ -247,12 +258,12 @@ export default function NewInvoicePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="dueDate">Fälligkeitsdatum *</Label>
+                    <Label htmlFor="validUntil">Gültig bis *</Label>
                     <Input
-                      id="dueDate"
+                      id="validUntil"
                       type="date"
-                      value={dueDate}
-                      onChange={(e) => setDueDate(e.target.value)}
+                      value={validUntil}
+                      onChange={(e) => setValidUntil(e.target.value)}
                       required
                     />
                   </div>
@@ -373,12 +384,12 @@ export default function NewInvoicePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="paymentTerms">Zahlungsbedingungen</Label>
+                  <Label htmlFor="termsConditions">Bedingungen</Label>
                   <Input
-                    id="paymentTerms"
-                    placeholder="z.B. Zahlbar innerhalb von 14 Tagen ohne Abzug"
-                    value={paymentTerms}
-                    onChange={(e) => setPaymentTerms(e.target.value)}
+                    id="termsConditions"
+                    placeholder="z.B. Gültig für 30 Tage"
+                    value={termsConditions}
+                    onChange={(e) => setTermsConditions(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -422,7 +433,7 @@ export default function NewInvoicePage() {
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              Rechnung erstellen
+              {isEditing ? 'Angebot aktualisieren' : 'Angebot erstellen'}
             </Button>
           </form>
         </div>
@@ -434,10 +445,9 @@ export default function NewInvoicePage() {
              <span className="font-medium text-sm">Live-Vorschau</span>
           </div>
           <div className="flex-1 bg-background rounded-md shadow-sm overflow-hidden border">
-             <InvoicePreview invoiceData={previewInvoice} />
+             <QuotePreview quoteData={previewQuote} />
           </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -87,4 +87,31 @@ export const invoicesApi = {
     a.click();
     URL.revokeObjectURL(url);
   },
+
+  async parseXml(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/invoices/import/parse`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to parse XML');
+    }
+
+    return response.json();
+  },
+
+  async executeImport(xmlContent: string, parsedData?: unknown) {
+    return apiClient.post<{ invoice: Invoice; customer?: { id: string; wasCreated: boolean } }>('/invoices/import/execute', {
+      xmlContent,
+      parsedData,
+    });
+  },
 };
