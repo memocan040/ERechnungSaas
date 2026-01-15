@@ -206,7 +206,7 @@ export default function QuoteDetailPage() {
 
       <div className="flex-1 bg-muted/30 rounded-lg border p-8 overflow-y-auto flex justify-center">
         <div className="w-full max-w-[210mm] bg-background shadow-lg rounded-sm overflow-hidden min-h-[297mm]">
-           <QuotePreview quoteData={quote} />
+           <QuotePreview quoteData={{ ...quote, items: quote.items || [] }} />
         </div>
       </div>
     </div>

@@ -9,3 +9,4 @@ export { settingsApi } from './settings';
 export { accountingApi } from './accounting';
 export { expensesApi } from './expenses';
 export { vendorsApi } from './vendors';
+export { invoiceDesignApi } from './invoice-design';

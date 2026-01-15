@@ -32,6 +32,7 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { title: 'Angebote', href: '/quotes', icon: FileText },
   { title: 'Rechnungen', href: '/invoices', icon: FileText },
   { title: 'Kunden', href: '/customers', icon: Users },
   { title: 'Berichte', href: '/reports', icon: BarChart3 },

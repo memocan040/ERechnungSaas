@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, User, FileText, Bell, Lock } from 'lucide-react';
+import { Save, User, FileText, Bell, Lock, Palette, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,13 +16,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { UserSettings, User as UserType } from '@/types';
-import { settingsApi, authApi } from '@/lib/api';
+import { settingsApi, authApi, invoiceDesignApi } from '@/lib/api';
+import { InvoiceDesignSettings, InvoiceTemplate } from '@/lib/api/invoice-design';
+import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [designSettings, setDesignSettings] = useState<InvoiceDesignSettings | null>(null);
+  const [templates, setTemplates] = useState<InvoiceTemplate[]>([]);
+  
   const [formData, setFormData] = useState({
     defaultTaxRate: 19,
     defaultPaymentDays: 14,
@@ -31,6 +36,19 @@ export default function SettingsPage() {
     language: 'de',
     emailNotifications: true,
   });
+  
+  const [designFormData, setDesignFormData] = useState({
+    template: 'modern',
+    primaryColor: '#2563eb',
+    secondaryColor: '#64748b',
+    fontFamily: 'Inter',
+    showLogo: true,
+    showWatermark: false,
+    showFooter: true,
+    showQrCode: true,
+    margin: 'standard',
+  });
+
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -43,9 +61,11 @@ export default function SettingsPage() {
 
   const loadData = async () => {
     try {
-      const [userRes, settingsRes] = await Promise.all([
+      const [userRes, settingsRes, designRes, templatesRes] = await Promise.all([
         authApi.getCurrentUser(),
         settingsApi.get(),
+        invoiceDesignApi.get(),
+        invoiceDesignApi.getTemplates(),
       ]);
 
       if (userRes.success && userRes.data) {
@@ -62,6 +82,25 @@ export default function SettingsPage() {
           language: settingsRes.data.language,
           emailNotifications: settingsRes.data.emailNotifications,
         });
+      }
+
+      if (designRes.success && designRes.data) {
+        setDesignSettings(designRes.data);
+        setDesignFormData({
+          template: designRes.data.template || 'modern',
+          primaryColor: designRes.data.primaryColor || '#2563eb',
+          secondaryColor: designRes.data.secondaryColor || '#64748b',
+          fontFamily: designRes.data.fontFamily || 'Inter',
+          showLogo: designRes.data.showLogo ?? true,
+          showWatermark: designRes.data.showWatermark ?? false,
+          showFooter: designRes.data.showFooter ?? true,
+          showQrCode: designRes.data.showQrCode ?? true,
+          margin: designRes.data.margin || 'standard',
+        });
+      }
+
+      if (templatesRes.success && templatesRes.data) {
+        setTemplates(templatesRes.data);
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -83,6 +122,24 @@ export default function SettingsPage() {
     } catch (error) {
       console.error('Error saving settings:', error);
       alert('Fehler beim Speichern');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveDesign = async () => {
+    setSaving(true);
+    try {
+      const response = await invoiceDesignApi.update(designFormData);
+      if (response.success && response.data) {
+        setDesignSettings(response.data);
+        alert('Design-Einstellungen gespeichert');
+      } else {
+        alert('Fehler beim Speichern der Design-Einstellungen');
+      }
+    } catch (error) {
+      console.error('Error saving design:', error);
+      alert('Fehler beim Speichern der Design-Einstellungen');
     } finally {
       setSaving(false);
     }
@@ -141,10 +198,14 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="invoice" className="space-y-4">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
           <TabsTrigger value="invoice">
             <FileText className="mr-2 h-4 w-4" />
             Rechnungen
+          </TabsTrigger>
+          <TabsTrigger value="design">
+            <Palette className="mr-2 h-4 w-4" />
+            Design
           </TabsTrigger>
           <TabsTrigger value="notifications">
             <Bell className="mr-2 h-4 w-4" />
@@ -231,6 +292,162 @@ export default function SettingsPage() {
                     <Save className="mr-2 h-4 w-4" />
                   )}
                   Speichern
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="design" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Rechnungsdesign</CardTitle>
+              <CardDescription>Passen Sie das Aussehen Ihrer Rechnungen an</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Templates */}
+              <div className="space-y-4">
+                <Label>Vorlage auswählen</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {templates.map((template) => (
+                    <div
+                      key={template.id}
+                      className={cn(
+                        "cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary/50",
+                        designFormData.template === template.id
+                          ? "border-primary bg-primary/5"
+                          : "border-muted"
+                      )}
+                      onClick={() => setDesignFormData(prev => ({ ...prev, template: template.id }))}
+                    >
+                      <div className="aspect-[210/297] bg-white border rounded shadow-sm mb-3 flex items-center justify-center text-xs text-muted-foreground">
+                        {/* Placeholder for template thumbnail */}
+                        {template.name} Vorschau
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-sm">{template.name}</span>
+                        {designFormData.template === template.id && (
+                          <Check className="h-4 w-4 text-primary" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="primaryColor">Primärfarbe</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="primaryColor"
+                      type="color"
+                      value={designFormData.primaryColor}
+                      onChange={(e) => setDesignFormData(prev => ({ ...prev, primaryColor: e.target.value }))}
+                      className="w-12 h-10 p-1"
+                    />
+                    <Input
+                      value={designFormData.primaryColor}
+                      onChange={(e) => setDesignFormData(prev => ({ ...prev, primaryColor: e.target.value }))}
+                      className="flex-1"
+                      placeholder="#000000"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="fontFamily">Schriftart</Label>
+                  <Select
+                    value={designFormData.fontFamily}
+                    onValueChange={(value) => setDesignFormData(prev => ({ ...prev, fontFamily: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Inter">Inter (Standard)</SelectItem>
+                      <SelectItem value="Roboto">Roboto</SelectItem>
+                      <SelectItem value="Open Sans">Open Sans</SelectItem>
+                      <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="margin">Seitenränder</Label>
+                  <Select
+                    value={designFormData.margin}
+                    onValueChange={(value) => setDesignFormData(prev => ({ ...prev, margin: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="compact">Kompakt</SelectItem>
+                      <SelectItem value="standard">Standard</SelectItem>
+                      <SelectItem value="wide">Breit</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Anzeigeoptionen</Label>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex items-center justify-between border rounded-lg p-4">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">Logo anzeigen</Label>
+                      <p className="text-sm text-muted-foreground">Firmenlogo auf der Rechnung anzeigen</p>
+                    </div>
+                    <Switch
+                      checked={designFormData.showLogo}
+                      onCheckedChange={(checked) => setDesignFormData(prev => ({ ...prev, showLogo: checked }))}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between border rounded-lg p-4">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">Fußzeile anzeigen</Label>
+                      <p className="text-sm text-muted-foreground">Bankverbindung und Firmendaten unten</p>
+                    </div>
+                    <Switch
+                      checked={designFormData.showFooter}
+                      onCheckedChange={(checked) => setDesignFormData(prev => ({ ...prev, showFooter: checked }))}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between border rounded-lg p-4">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">QR-Code anzeigen</Label>
+                      <p className="text-sm text-muted-foreground">EPC-QR-Code für Banking-Apps</p>
+                    </div>
+                    <Switch
+                      checked={designFormData.showQrCode}
+                      onCheckedChange={(checked) => setDesignFormData(prev => ({ ...prev, showQrCode: checked }))}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between border rounded-lg p-4">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">Wasserzeichen</Label>
+                      <p className="text-sm text-muted-foreground">Status (Entwurf/Bezahlt) als Hintergrund</p>
+                    </div>
+                    <Switch
+                      checked={designFormData.showWatermark}
+                      onCheckedChange={(checked) => setDesignFormData(prev => ({ ...prev, showWatermark: checked }))}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <Button onClick={handleSaveDesign} disabled={saving}>
+                  {saving ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  Design speichern
                 </Button>
               </div>
             </CardContent>

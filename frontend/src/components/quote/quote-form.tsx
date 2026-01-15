@@ -131,7 +131,7 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
     }
   };
 
-  const updateItem = (index: number, field: keyof InvoiceItemForm, value: string | number) => {
+  const updateItem = (index: number, field: keyof QuoteItemForm, value: string | number) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
