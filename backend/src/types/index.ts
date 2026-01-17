@@ -144,6 +144,8 @@ export interface InvoiceDesignSettings {
   showCompanyLogo: boolean;
   showBankInfo: boolean;
   showFooterInfo: boolean;
+  showWatermark: boolean;
+  showQrCode: boolean;
   companyInfoPosition: 'left' | 'right';
   invoiceInfoPosition: 'left' | 'right';
   createdAt: Date;
@@ -173,6 +175,8 @@ export interface UpdateInvoiceDesignData {
   showCompanyLogo?: boolean;
   showBankInfo?: boolean;
   showFooterInfo?: boolean;
+  showWatermark?: boolean;
+  showQrCode?: boolean;
   companyInfoPosition?: string;
   invoiceInfoPosition?: string;
 }

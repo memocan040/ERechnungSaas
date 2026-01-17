@@ -70,6 +70,7 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
       taxRate: item.taxRate,
     })) || [{ description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 }]
   );
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -80,7 +81,7 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
           const valid = new Date();
           valid.setDate(valid.getDate() + 30); // Default 30 days validity
           setValidUntil(valid.toISOString().split('T')[0]);
-          
+
           setItems([
             { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: settings.defaultTaxRate },
           ]);
@@ -90,6 +91,8 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
         const valid = new Date();
         valid.setDate(valid.getDate() + 30);
         setValidUntil(valid.toISOString().split('T')[0]);
+      } finally {
+        setSettingsLoaded(true);
       }
     };
 
@@ -104,13 +107,13 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
       }
     };
 
-    if (!initialData) {
+    if (!initialData && !settingsLoaded) {
       loadSettings();
       loadCompany();
-    } else {
-      if (!company) loadCompany();
+    } else if (!company) {
+      loadCompany();
     }
-  }, [initialData, company]);
+  }, [initialData, company, settingsLoaded]);
 
   const handleCustomerChange = (id: string, customer?: Customer) => {
     setSelectedCustomerId(id);

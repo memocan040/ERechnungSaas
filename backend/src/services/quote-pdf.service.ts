@@ -5,6 +5,7 @@ import { customerService } from './customer.service';
 import { invoiceDesignService } from './invoice-design.service';
 import fs from 'fs';
 import path from 'path';
+import QRCode from 'qrcode';
 
 export class QuotePdfService {
   async generatePdf(userId: string, quote: Quote): Promise<Buffer> {
@@ -15,6 +16,22 @@ export class QuotePdfService {
     let designSettings = await invoiceDesignService.findByUserId(userId);
     if (!designSettings) {
       designSettings = await invoiceDesignService.createOrUpdate(userId, {});
+    }
+
+    // Generate QR code buffer before PDF creation (async)
+    let qrBuffer: Buffer | null = null;
+    if (designSettings.showQrCode && company?.iban) {
+      try {
+        const epcQrData = this.generateEpcQrData(company, quote);
+        qrBuffer = await QRCode.toBuffer(epcQrData, {
+          type: 'png',
+          width: 80,
+          margin: 1,
+          errorCorrectionLevel: 'M'
+        });
+      } catch (qrError) {
+        console.error('Error generating QR code:', qrError);
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -252,6 +269,69 @@ export class QuotePdfService {
           { width: contentWidth }
         );
 
+        // Bank Info
+        if (designSettings.showBankInfo && company && (company.bankName || company.iban)) {
+          currentY += 70;
+          doc.fillColor(designSettings.textColor)
+             .font(`${designSettings.fontFamily}-Bold`)
+             .fontSize(designSettings.bodyFontSize - 1);
+          doc.text('Bankverbindung:', marginLeft, currentY);
+          currentY += 15;
+
+          doc.font(designSettings.fontFamily).fontSize(designSettings.bodyFontSize - 1);
+          if (company.bankName) {
+            doc.text(`Bank: ${company.bankName}`, marginLeft, currentY);
+            currentY += 15;
+          }
+          if (company.iban) {
+            doc.text(`IBAN: ${company.iban}`, marginLeft, currentY);
+            currentY += 15;
+          }
+          if (company.bic) {
+            doc.text(`BIC: ${company.bic}`, marginLeft, currentY);
+          }
+        }
+
+        // QR Code for EPC/SEPA payment
+        if (qrBuffer) {
+          try {
+            // Position QR code in bottom right corner, above footer
+            const qrX = pageWidth - marginRight - 80;
+            const qrY = 680;
+            doc.image(qrBuffer, qrX, qrY, { width: 70, height: 70 });
+
+            // Add small label
+            doc.fontSize(6).fillColor(designSettings.secondaryColor);
+            doc.text('Zahlung per QR-Code', qrX, qrY + 72, { width: 70, align: 'center' });
+          } catch (qrError) {
+            console.error('Error rendering QR code:', qrError);
+          }
+        }
+
+        // Watermark for quote status
+        if (designSettings.showWatermark && quote.status !== 'sent') {
+          const watermarkText = this.getWatermarkText(quote.status);
+          if (watermarkText) {
+            doc.save();
+
+            // Center of page
+            const centerX = pageWidth / 2;
+            const centerY = 421; // A4 height / 2
+
+            // Rotate and position
+            doc.translate(centerX, centerY);
+            doc.rotate(-45);
+
+            // Draw watermark text
+            doc.fontSize(72)
+               .fillColor('#cccccc')
+               .opacity(0.3)
+               .text(watermarkText, -150, -30, { width: 300, align: 'center' });
+
+            doc.restore();
+          }
+        }
+
         // Footer
         if (designSettings.showFooterInfo) {
           const footerY = 780;
@@ -284,6 +364,41 @@ export class QuotePdfService {
       style: 'currency',
       currency: 'EUR',
     }).format(amount);
+  }
+
+  /**
+   * Generate EPC QR code data string for SEPA credit transfer
+   */
+  private generateEpcQrData(company: Company, quote: Quote): string {
+    const lines = [
+      'BCD',                                          // Service Tag
+      '002',                                          // Version
+      '1',                                            // Character Set (1 = UTF-8)
+      'SCT',                                          // SEPA Credit Transfer
+      company.bic || '',                              // BIC (optional)
+      company.name.substring(0, 70),                  // Beneficiary Name (max 70 chars)
+      company.iban?.replace(/\s/g, '') || '',         // IBAN (no spaces)
+      `EUR${quote.total.toFixed(2)}`,                // Amount
+      '',                                             // Purpose code (optional)
+      quote.quoteNumber.substring(0, 35),            // Reference (max 35 chars)
+      `Angebot ${quote.quoteNumber}`,                // Remittance Info
+      ''                                              // Beneficiary Info (optional)
+    ];
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Get watermark text based on quote status
+   */
+  private getWatermarkText(status: string): string | null {
+    const statusTexts: Record<string, string> = {
+      'draft': 'ENTWURF',
+      'accepted': 'ANGENOMMEN',
+      'rejected': 'ABGELEHNT',
+      'expired': 'ABGELAUFEN',
+    };
+    return statusTexts[status] || null;
   }
 }
 

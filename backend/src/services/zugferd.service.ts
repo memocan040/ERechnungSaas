@@ -6,6 +6,7 @@ import { customerService } from './customer.service';
 import { invoiceDesignService } from './invoice-design.service';
 import fs from 'fs';
 import path from 'path';
+import QRCode from 'qrcode';
 
 export class ZugferdService {
   async generatePdf(userId: string, invoice: Invoice): Promise<Buffer> {
@@ -14,9 +15,39 @@ export class ZugferdService {
 
     // Load design settings
     let designSettings = await invoiceDesignService.findByUserId(userId);
+    console.log('[ZugferdService] Loaded design settings for user:', userId, designSettings ? 'Found' : 'Not found');
+
     if (!designSettings) {
       // Create default settings if none exist
+      console.log('[ZugferdService] Creating default design settings...');
       designSettings = await invoiceDesignService.createOrUpdate(userId, {});
+    }
+
+    console.log('[ZugferdService] Using design settings:', {
+      logoPosition: designSettings.logoPosition,
+      logoSize: designSettings.logoSize,
+      showLogo: designSettings.showLogo,
+      showCompanyLogo: designSettings.showCompanyLogo,
+      showFooterInfo: designSettings.showFooterInfo,
+      showBankInfo: designSettings.showBankInfo,
+      showQrCode: designSettings.showQrCode,
+      showWatermark: designSettings.showWatermark,
+    });
+
+    // Generate QR code buffer before PDF creation (async)
+    let qrBuffer: Buffer | null = null;
+    if (designSettings.showQrCode && company?.iban) {
+      try {
+        const epcQrData = this.generateEpcQrData(company, invoice);
+        qrBuffer = await QRCode.toBuffer(epcQrData, {
+          type: 'png',
+          width: 80,
+          margin: 1,
+          errorCorrectionLevel: 'M'
+        });
+      } catch (qrError) {
+        console.error('Error generating QR code:', qrError);
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -281,6 +312,46 @@ export class ZugferdService {
           }
         }
 
+        // QR Code for EPC/SEPA payment
+        if (qrBuffer) {
+          try {
+            // Position QR code in bottom right corner, above footer
+            const qrX = pageWidth - marginRight - 80;
+            const qrY = 680;
+            doc.image(qrBuffer, qrX, qrY, { width: 70, height: 70 });
+
+            // Add small label
+            doc.fontSize(6).fillColor(designSettings.secondaryColor);
+            doc.text('Zahlung per QR-Code', qrX, qrY + 72, { width: 70, align: 'center' });
+          } catch (qrError) {
+            console.error('Error rendering QR code:', qrError);
+          }
+        }
+
+        // Watermark for invoice status
+        if (designSettings.showWatermark && invoice.status !== 'sent') {
+          const watermarkText = this.getWatermarkText(invoice.status);
+          if (watermarkText) {
+            doc.save();
+
+            // Center of page
+            const centerX = pageWidth / 2;
+            const centerY = 421; // A4 height / 2
+
+            // Rotate and position
+            doc.translate(centerX, centerY);
+            doc.rotate(-45);
+
+            // Draw watermark text
+            doc.fontSize(72)
+               .fillColor('#cccccc')
+               .opacity(0.3)
+               .text(watermarkText, -150, -30, { width: 300, align: 'center' });
+
+            doc.restore();
+          }
+        }
+
         doc.end();
       } catch (error) {
         reject(error);
@@ -481,6 +552,56 @@ export class ZugferdService {
       taxRate,
       ...amounts,
     }));
+  }
+
+  /**
+   * Generate EPC QR code data string for SEPA credit transfer
+   * Format: EPC069-12 (European Payments Council Quick Response Code)
+   */
+  private generateEpcQrData(company: Company, invoice: Invoice): string {
+    // EPC QR Code format:
+    // BCD (Service Tag)
+    // 002 (Version)
+    // 1 (Character Set - UTF-8)
+    // SCT (Identification Code - SEPA Credit Transfer)
+    // BIC (optional)
+    // Beneficiary Name
+    // IBAN
+    // Amount (EUR format)
+    // Purpose code (optional)
+    // Reference
+    // Remittance (payment reason)
+    // Beneficiary to Originator Info (optional)
+
+    const lines = [
+      'BCD',                                          // Service Tag
+      '002',                                          // Version
+      '1',                                            // Character Set (1 = UTF-8)
+      'SCT',                                          // SEPA Credit Transfer
+      company.bic || '',                              // BIC (optional)
+      company.name.substring(0, 70),                  // Beneficiary Name (max 70 chars)
+      company.iban?.replace(/\s/g, '') || '',         // IBAN (no spaces)
+      `EUR${invoice.total.toFixed(2)}`,              // Amount
+      '',                                             // Purpose code (optional)
+      invoice.invoiceNumber.substring(0, 35),        // Reference (max 35 chars)
+      `Rechnung ${invoice.invoiceNumber}`,           // Remittance Info
+      ''                                              // Beneficiary Info (optional)
+    ];
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Get watermark text based on invoice status
+   */
+  private getWatermarkText(status: string): string | null {
+    const statusTexts: Record<string, string> = {
+      'draft': 'ENTWURF',
+      'paid': 'BEZAHLT',
+      'cancelled': 'STORNIERT',
+      'overdue': 'ÜBERFÄLLIG',
+    };
+    return statusTexts[status] || null;
   }
 }
 

@@ -155,12 +155,19 @@ CREATE TABLE invoice_design_settings (
     show_company_logo BOOLEAN DEFAULT true,
     show_bank_info BOOLEAN DEFAULT true,
     show_footer_info BOOLEAN DEFAULT true,
+    show_watermark BOOLEAN DEFAULT false,
+    show_qr_code BOOLEAN DEFAULT true,
     company_info_position VARCHAR(20) DEFAULT 'left' CHECK (company_info_position IN ('left', 'right')),
     invoice_info_position VARCHAR(20) DEFAULT 'right' CHECK (invoice_info_position IN ('left', 'right')),
 
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Migration for existing databases (add new columns if they don't exist)
+-- Run these manually if upgrading an existing database:
+-- ALTER TABLE invoice_design_settings ADD COLUMN IF NOT EXISTS show_watermark BOOLEAN DEFAULT false;
+-- ALTER TABLE invoice_design_settings ADD COLUMN IF NOT EXISTS show_qr_code BOOLEAN DEFAULT true;
 
 -- Sessions table for refresh tokens
 CREATE TABLE sessions (

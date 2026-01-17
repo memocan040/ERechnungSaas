@@ -4,25 +4,39 @@ import { ApiResponse } from '@/types';
 export interface InvoiceDesignSettings {
   id: string;
   userId: string;
-  template: string;
+  templateName?: string;
+  template?: string;
   primaryColor: string;
   secondaryColor: string;
   fontFamily: string;
   showLogo: boolean;
-  showWatermark: boolean;
-  showFooter: boolean;
-  showQrCode: boolean;
-  margin: string;
+  showCompanyLogo?: boolean;
+  showWatermark?: boolean;
+  showFooter?: boolean;
+  showFooterInfo?: boolean;
+  showQrCode?: boolean;
+  showBankInfo?: boolean;
+  margin?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface InvoiceTemplate {
-  id: string;
   name: string;
+  displayName: string;
   description: string;
-  thumbnail: string;
-  features: string[];
+  settings: {
+    templateName: string;
+    primaryColor: string;
+    secondaryColor: string;
+    textColor: string;
+    backgroundColor: string;
+    tableHeaderBg: string;
+    accentColor: string;
+    logoPosition: string;
+    logoSize: string;
+    fontFamily: string;
+  };
 }
 
 export const invoiceDesignApi = {

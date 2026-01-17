@@ -86,16 +86,20 @@ export default function SettingsPage() {
 
       if (designRes.success && designRes.data) {
         setDesignSettings(designRes.data);
+        // Map backend field names to frontend field names
+        const data = designRes.data;
         setDesignFormData({
-          template: designRes.data.template || 'modern',
-          primaryColor: designRes.data.primaryColor || '#2563eb',
-          secondaryColor: designRes.data.secondaryColor || '#64748b',
-          fontFamily: designRes.data.fontFamily || 'Inter',
-          showLogo: designRes.data.showLogo ?? true,
-          showWatermark: designRes.data.showWatermark ?? false,
-          showFooter: designRes.data.showFooter ?? true,
-          showQrCode: designRes.data.showQrCode ?? true,
-          margin: designRes.data.margin || 'standard',
+          template: data.templateName || data.template || 'modern',
+          primaryColor: data.primaryColor || '#2563eb',
+          secondaryColor: data.secondaryColor || '#64748b',
+          fontFamily: data.fontFamily === 'Times-Roman' ? 'Times New Roman' :
+                      data.fontFamily === 'Helvetica' ? 'Inter' :
+                      data.fontFamily || 'Inter',
+          showLogo: data.showLogo ?? true,
+          showWatermark: data.showWatermark ?? false,
+          showFooter: data.showFooterInfo ?? data.showFooter ?? true,
+          showQrCode: data.showQrCode ?? true,
+          margin: data.margin || 'standard',
         });
       }
 
@@ -130,7 +134,38 @@ export default function SettingsPage() {
   const handleSaveDesign = async () => {
     setSaving(true);
     try {
-      const response = await invoiceDesignApi.update(designFormData);
+      // Find the selected template to get its settings
+      const selectedTemplate = templates.find(t => t.name === designFormData.template);
+      const templateSettings = selectedTemplate?.settings as Record<string, string> | undefined;
+
+      // Map frontend field names to backend field names
+      // Include all template settings plus user overrides
+      const backendData = {
+        templateName: designFormData.template,
+        primaryColor: designFormData.primaryColor,
+        secondaryColor: designFormData.secondaryColor,
+        textColor: templateSettings?.textColor || '#000000',
+        backgroundColor: templateSettings?.backgroundColor || '#ffffff',
+        tableHeaderBg: templateSettings?.tableHeaderBg || '#eff6ff',
+        accentColor: templateSettings?.accentColor || '#0ea5e9',
+        logoPosition: templateSettings?.logoPosition || 'left',
+        logoSize: templateSettings?.logoSize || 'medium',
+        fontFamily: designFormData.fontFamily === 'Inter' ? 'Helvetica' :
+                    designFormData.fontFamily === 'Roboto' ? 'Helvetica' :
+                    designFormData.fontFamily === 'Open Sans' ? 'Helvetica' :
+                    designFormData.fontFamily === 'Times New Roman' ? 'Times-Roman' :
+                    templateSettings?.fontFamily || 'Helvetica',
+        showLogo: designFormData.showLogo,
+        showCompanyLogo: designFormData.showLogo,
+        showBankInfo: true,
+        showFooterInfo: designFormData.showFooter,
+        showWatermark: designFormData.showWatermark,
+        showQrCode: designFormData.showQrCode,
+      };
+
+      console.log('[Settings] Saving design settings:', backendData);
+
+      const response = await invoiceDesignApi.update(backendData);
       if (response.success && response.data) {
         setDesignSettings(response.data);
         alert('Design-Einstellungen gespeichert');
@@ -308,30 +343,188 @@ export default function SettingsPage() {
               {/* Templates */}
               <div className="space-y-4">
                 <Label>Vorlage auswählen</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {templates.map((template) => (
-                    <div
-                      key={template.id}
-                      className={cn(
-                        "cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary/50",
-                        designFormData.template === template.id
-                          ? "border-primary bg-primary/5"
-                          : "border-muted"
-                      )}
-                      onClick={() => setDesignFormData(prev => ({ ...prev, template: template.id }))}
-                    >
-                      <div className="aspect-[210/297] bg-white border rounded shadow-sm mb-3 flex items-center justify-center text-xs text-muted-foreground">
-                        {/* Placeholder for template thumbnail */}
-                        {template.name} Vorschau
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm">{template.name}</span>
-                        {designFormData.template === template.id && (
-                          <Check className="h-4 w-4 text-primary" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {templates.map((template) => {
+                    const s = template.settings;
+                    const logoSize = s.logoSize === 'large' ? 28 : s.logoSize === 'small' ? 16 : 22;
+
+                    return (
+                      <div
+                        key={template.name}
+                        className={cn(
+                          "cursor-pointer rounded-lg border-2 p-3 transition-all hover:border-primary/50 hover:shadow-md",
+                          designFormData.template === template.name
+                            ? "border-primary bg-primary/5 shadow-md"
+                            : "border-muted"
                         )}
+                        onClick={() => setDesignFormData(prev => ({
+                          ...prev,
+                          template: template.name,
+                          primaryColor: template.settings.primaryColor,
+                          secondaryColor: template.settings.secondaryColor,
+                        }))}
+                      >
+                        {/* Realistic Mini Invoice Preview with Example Data */}
+                        <div
+                          className="aspect-[210/297] bg-white border rounded shadow-sm mb-3 overflow-hidden flex flex-col relative"
+                          style={{ padding: '8px' }}
+                        >
+                          {/* === HEADER SECTION === */}
+                          <div className={cn(
+                            "flex mb-3 gap-2",
+                            s.logoPosition === 'center' ? "flex-col items-center" :
+                            s.logoPosition === 'right' ? "flex-row-reverse justify-between" : "flex-row justify-between"
+                          )}>
+                            {/* Logo */}
+                            <div
+                              className="rounded flex items-center justify-center text-white font-bold"
+                              style={{
+                                backgroundColor: s.primaryColor,
+                                width: logoSize,
+                                height: logoSize,
+                                fontSize: logoSize * 0.35,
+                              }}
+                            >
+                              AB
+                            </div>
+
+                            {/* Company Info (opposite side of logo) */}
+                            {s.logoPosition !== 'center' && (
+                              <div className={cn(
+                                "flex flex-col",
+                                s.logoPosition === 'right' ? "items-start" : "items-end"
+                              )} style={{ fontSize: '4px', lineHeight: '1.3' }}>
+                                <span style={{ color: s.primaryColor, fontWeight: 'bold' }}>Muster GmbH</span>
+                                <span className="text-gray-500">Musterstr. 1</span>
+                                <span className="text-gray-500">12345 Berlin</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Center logo - company info below */}
+                          {s.logoPosition === 'center' && (
+                            <div className="flex flex-col items-center mb-2" style={{ fontSize: '4px', lineHeight: '1.3' }}>
+                              <span style={{ color: s.primaryColor, fontWeight: 'bold' }}>Muster GmbH</span>
+                              <span className="text-gray-500">Musterstr. 1, 12345 Berlin</span>
+                            </div>
+                          )}
+
+                          {/* === ADDRESS & INVOICE INFO === */}
+                          <div className="flex justify-between mb-2 gap-2" style={{ fontSize: '3.5px', lineHeight: '1.4' }}>
+                            {/* Customer Address */}
+                            <div className="flex flex-col text-gray-600">
+                              <span className="text-gray-400" style={{ fontSize: '3px' }}>Rechnungsempfänger</span>
+                              <span className="font-medium text-gray-800">Kunde AG</span>
+                              <span>Max Mustermann</span>
+                              <span>Kundenweg 5</span>
+                              <span>54321 München</span>
+                            </div>
+                            {/* Invoice Details */}
+                            <div className="flex flex-col items-end text-gray-600">
+                              <span><span className="text-gray-400">Nr:</span> RE-2024-001</span>
+                              <span><span className="text-gray-400">Datum:</span> 15.01.2024</span>
+                              <span><span className="text-gray-400">Fällig:</span> 29.01.2024</span>
+                            </div>
+                          </div>
+
+                          {/* === INVOICE TITLE === */}
+                          <div
+                            className="font-bold mb-2"
+                            style={{ color: s.primaryColor, fontSize: '6px' }}
+                          >
+                            RECHNUNG
+                          </div>
+
+                          {/* === TABLE === */}
+                          <div className="flex-1 flex flex-col" style={{ fontSize: '3px' }}>
+                            {/* Table Header */}
+                            <div
+                              className="flex gap-1 px-1 py-0.5"
+                              style={{ backgroundColor: s.tableHeaderBg }}
+                            >
+                              <span className="flex-[3] font-bold" style={{ color: s.primaryColor }}>Beschreibung</span>
+                              <span className="flex-1 text-right font-bold" style={{ color: s.primaryColor }}>Menge</span>
+                              <span className="flex-1 text-right font-bold" style={{ color: s.primaryColor }}>Preis</span>
+                              <span className="flex-1 text-right font-bold" style={{ color: s.primaryColor }}>Gesamt</span>
+                            </div>
+
+                            {/* Table Rows */}
+                            <div className="border-x border-b border-gray-200">
+                              <div className="flex gap-1 px-1 py-0.5 text-gray-700">
+                                <span className="flex-[3]">Beratung</span>
+                                <span className="flex-1 text-right">8</span>
+                                <span className="flex-1 text-right">150,00</span>
+                                <span className="flex-1 text-right">1.200,00</span>
+                              </div>
+                              <div className="flex gap-1 px-1 py-0.5 bg-gray-50 text-gray-700">
+                                <span className="flex-[3]">Entwicklung</span>
+                                <span className="flex-1 text-right">20</span>
+                                <span className="flex-1 text-right">120,00</span>
+                                <span className="flex-1 text-right">2.400,00</span>
+                              </div>
+                              <div className="flex gap-1 px-1 py-0.5 text-gray-700">
+                                <span className="flex-[3]">Support</span>
+                                <span className="flex-1 text-right">5</span>
+                                <span className="flex-1 text-right">80,00</span>
+                                <span className="flex-1 text-right">400,00</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* === TOTALS === */}
+                          <div className="flex justify-end mt-2" style={{ fontSize: '3.5px' }}>
+                            <div className="flex flex-col gap-0.5" style={{ width: '50%' }}>
+                              <div className="flex justify-between text-gray-600">
+                                <span>Netto</span>
+                                <span>4.000,00 €</span>
+                              </div>
+                              <div className="flex justify-between text-gray-600">
+                                <span>MwSt. 19%</span>
+                                <span>760,00 €</span>
+                              </div>
+                              <div
+                                className="flex justify-between font-bold pt-0.5 mt-0.5"
+                                style={{ borderTop: `1px solid ${s.primaryColor}`, color: s.primaryColor }}
+                              >
+                                <span>Gesamt</span>
+                                <span>4.760,00 €</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* === FOOTER === */}
+                          <div
+                            className="mt-auto pt-1 flex justify-between gap-1 text-gray-500"
+                            style={{ borderTop: `1px solid ${s.secondaryColor}30`, fontSize: '2.5px' }}
+                          >
+                            <div className="flex flex-col">
+                              <span style={{ color: s.secondaryColor }}>Bank</span>
+                              <span>DE89 3704 0044 0532</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span style={{ color: s.secondaryColor }}>Kontakt</span>
+                              <span>info@muster.de</span>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <span style={{ color: s.secondaryColor }}>USt-IdNr.</span>
+                              <span>DE123456789</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Template Info */}
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <span className="font-medium text-sm block truncate">{template.displayName}</span>
+                            <span className="text-xs text-muted-foreground line-clamp-2">{template.description}</span>
+                          </div>
+                          {designFormData.template === template.name && (
+                            <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

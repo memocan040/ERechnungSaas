@@ -162,8 +162,8 @@ export class InvoiceDesignService {
         show_logo, font_family, header_font_size, body_font_size, footer_font_size,
         page_margin_top, page_margin_bottom, page_margin_left, page_margin_right,
         section_spacing, show_company_logo, show_bank_info, show_footer_info,
-        company_info_position, invoice_info_position
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
+        show_watermark, show_qr_code, company_info_position, invoice_info_position
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)
       RETURNING *`,
       [
         userId,
@@ -189,6 +189,8 @@ export class InvoiceDesignService {
         data.showCompanyLogo !== undefined ? data.showCompanyLogo : true,
         data.showBankInfo !== undefined ? data.showBankInfo : true,
         data.showFooterInfo !== undefined ? data.showFooterInfo : true,
+        data.showWatermark !== undefined ? data.showWatermark : false,
+        data.showQrCode !== undefined ? data.showQrCode : true,
         data.companyInfoPosition || 'left',
         data.invoiceInfoPosition || 'right',
       ]
@@ -225,6 +227,8 @@ export class InvoiceDesignService {
       showCompanyLogo: 'show_company_logo',
       showBankInfo: 'show_bank_info',
       showFooterInfo: 'show_footer_info',
+      showWatermark: 'show_watermark',
+      showQrCode: 'show_qr_code',
       companyInfoPosition: 'company_info_position',
       invoiceInfoPosition: 'invoice_info_position',
     };
@@ -275,36 +279,41 @@ export class InvoiceDesignService {
   }
 
   private mapToDesignSettings(row: Record<string, unknown>): InvoiceDesignSettings {
-    return {
+    const settings = {
       id: row.id as string,
       userId: row.user_id as string,
-      templateName: row.template_name as any,
-      primaryColor: row.primary_color as string,
-      secondaryColor: row.secondary_color as string,
-      textColor: row.text_color as string,
-      backgroundColor: row.background_color as string,
-      tableHeaderBg: row.table_header_bg as string,
-      accentColor: row.accent_color as string,
-      logoPosition: row.logo_position as any,
-      logoSize: row.logo_size as any,
-      showLogo: row.show_logo as boolean,
-      fontFamily: row.font_family as any,
-      headerFontSize: row.header_font_size as number,
-      bodyFontSize: row.body_font_size as number,
-      footerFontSize: row.footer_font_size as number,
-      pageMarginTop: row.page_margin_top as number,
-      pageMarginBottom: row.page_margin_bottom as number,
-      pageMarginLeft: row.page_margin_left as number,
-      pageMarginRight: row.page_margin_right as number,
-      sectionSpacing: row.section_spacing as number,
-      showCompanyLogo: row.show_company_logo as boolean,
-      showBankInfo: row.show_bank_info as boolean,
-      showFooterInfo: row.show_footer_info as boolean,
-      companyInfoPosition: row.company_info_position as any,
-      invoiceInfoPosition: row.invoice_info_position as any,
+      templateName: (row.template_name as any) || 'modern',
+      primaryColor: (row.primary_color as string) || '#2563eb',
+      secondaryColor: (row.secondary_color as string) || '#64748b',
+      textColor: (row.text_color as string) || '#000000',
+      backgroundColor: (row.background_color as string) || '#ffffff',
+      tableHeaderBg: (row.table_header_bg as string) || '#eff6ff',
+      accentColor: (row.accent_color as string) || '#0ea5e9',
+      logoPosition: (row.logo_position as any) || 'left',
+      logoSize: (row.logo_size as any) || 'medium',
+      showLogo: row.show_logo !== null && row.show_logo !== undefined ? row.show_logo as boolean : true,
+      fontFamily: (row.font_family as any) || 'Helvetica',
+      headerFontSize: (row.header_font_size as number) || 24,
+      bodyFontSize: (row.body_font_size as number) || 10,
+      footerFontSize: (row.footer_font_size as number) || 8,
+      pageMarginTop: (row.page_margin_top as number) || 50,
+      pageMarginBottom: (row.page_margin_bottom as number) || 50,
+      pageMarginLeft: (row.page_margin_left as number) || 50,
+      pageMarginRight: (row.page_margin_right as number) || 50,
+      sectionSpacing: (row.section_spacing as number) || 20,
+      showCompanyLogo: row.show_company_logo !== null && row.show_company_logo !== undefined ? row.show_company_logo as boolean : true,
+      showBankInfo: row.show_bank_info !== null && row.show_bank_info !== undefined ? row.show_bank_info as boolean : true,
+      showFooterInfo: row.show_footer_info !== null && row.show_footer_info !== undefined ? row.show_footer_info as boolean : true,
+      showWatermark: row.show_watermark !== null && row.show_watermark !== undefined ? row.show_watermark as boolean : false,
+      showQrCode: row.show_qr_code !== null && row.show_qr_code !== undefined ? row.show_qr_code as boolean : true,
+      companyInfoPosition: (row.company_info_position as any) || 'left',
+      invoiceInfoPosition: (row.invoice_info_position as any) || 'right',
       createdAt: row.created_at as Date,
       updatedAt: row.updated_at as Date,
     };
+
+    console.log('[InvoiceDesignService] Loaded settings:', JSON.stringify(settings, null, 2));
+    return settings;
   }
 }
 
