@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, FileText, Eye, Download, Send } from 'lucide-react';
 import type { Invoice, InvoiceStatus } from '@/types';
 import { invoicesApi } from '@/lib/api';
+import { formatCurrency, formatDate } from '@/lib/constants';
 
 interface RecentInvoicesProps {
   invoices: Invoice[];
@@ -60,21 +61,6 @@ const STATUS_LABELS: Record<InvoiceStatus, string> = {
   overdue: 'Überfällig',
   cancelled: 'Storniert',
 };
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Intl.DateTimeFormat('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  }).format(new Date(dateString));
-}
 
 export function RecentInvoices({ invoices, stats }: RecentInvoicesProps) {
   const handleDownloadPdf = async (invoice: Invoice) => {

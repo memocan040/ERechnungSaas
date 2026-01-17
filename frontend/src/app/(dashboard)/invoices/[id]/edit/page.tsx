@@ -21,6 +21,7 @@ import { invoicesApi, companyApi } from '@/lib/api';
 import { InvoicePreview } from '@/components/invoice/invoice-preview';
 import { CustomerSelector } from '@/components/form/customer-selector';
 import { useToast } from '@/hooks/use-toast';
+import { formatCurrency } from '@/lib/constants';
 
 interface InvoiceItemForm {
   id?: string;
@@ -29,13 +30,6 @@ interface InvoiceItemForm {
   unit: string;
   unitPrice: number;
   taxRate: number;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
 }
 
 export default function EditInvoicePage() {

@@ -17,25 +17,7 @@ import {
 } from '@/components/ui/table';
 import { Invoice, InvoiceStatus } from '@/types';
 import { invoicesApi } from '@/lib/api';
-
-const statusConfig: Record<InvoiceStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  draft: { label: 'Entwurf', variant: 'secondary' },
-  sent: { label: 'Gesendet', variant: 'default' },
-  paid: { label: 'Bezahlt', variant: 'outline' },
-  overdue: { label: 'Überfällig', variant: 'destructive' },
-  cancelled: { label: 'Storniert', variant: 'secondary' },
-};
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('de-DE');
-}
+import { invoiceStatusConfig, formatCurrency, formatDate } from '@/lib/constants';
 
 export default function InvoiceDetailPage() {
   const params = useParams();
@@ -121,8 +103,8 @@ export default function InvoiceDetailPage() {
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold tracking-tight">{invoice.invoiceNumber}</h1>
-              <Badge variant={statusConfig[invoice.status].variant}>
-                {statusConfig[invoice.status].label}
+              <Badge variant={invoiceStatusConfig[invoice.status].variant}>
+                {invoiceStatusConfig[invoice.status].label}
               </Badge>
             </div>
             <p className="text-muted-foreground">

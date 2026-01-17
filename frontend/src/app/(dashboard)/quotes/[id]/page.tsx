@@ -10,6 +10,8 @@ import { Quote, QuoteStatus } from '@/types';
 import { quotesApi } from '@/lib/api';
 import { QuoteForm } from '@/components/quote/quote-form';
 import { QuotePreview } from '@/components/quote/quote-preview';
+import { useToast } from '@/hooks/use-toast';
+import { quoteStatusConfig } from '@/lib/constants';
 import {
   Select,
   SelectContent,
@@ -18,18 +20,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const statusConfig: Record<QuoteStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  draft: { label: 'Entwurf', variant: 'secondary' },
-  sent: { label: 'Gesendet', variant: 'default' },
-  accepted: { label: 'Angenommen', variant: 'outline' },
-  rejected: { label: 'Abgelehnt', variant: 'destructive' },
-  expired: { label: 'Abgelaufen', variant: 'secondary' },
-  converted: { label: 'Umgewandelt', variant: 'outline' },
-};
-
 export default function QuoteDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [quote, setQuote] = useState<Quote | null>(null);
 
@@ -42,9 +36,20 @@ export default function QuoteDetailPage() {
       const response = await quotesApi.getById(params.id as string);
       if (response.success && response.data) {
         setQuote(response.data);
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Angebot konnte nicht geladen werden.',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error loading quote:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Angebot konnte nicht geladen werden.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -54,8 +59,17 @@ export default function QuoteDetailPage() {
     if (!quote) return;
     try {
       await quotesApi.downloadPdf(quote.id, quote.quoteNumber);
+      toast({
+        title: 'Erfolg',
+        description: 'PDF wird heruntergeladen.',
+      });
     } catch (error) {
       console.error('Error downloading PDF:', error);
+      toast({
+        title: 'Fehler',
+        description: 'PDF konnte nicht heruntergeladen werden.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -65,9 +79,24 @@ export default function QuoteDetailPage() {
       const response = await quotesApi.updateStatus(quote.id, newStatus);
       if (response.success && response.data) {
         setQuote(response.data);
+        toast({
+          title: 'Erfolg',
+          description: `Status auf "${quoteStatusConfig[newStatus].label}" geändert.`,
+        });
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Status konnte nicht geändert werden.',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error updating status:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Status konnte nicht geändert werden.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -76,10 +105,25 @@ export default function QuoteDetailPage() {
     try {
       const response = await quotesApi.convertToInvoice(quote.id);
       if (response.success && response.data) {
+        toast({
+          title: 'Erfolg',
+          description: 'Angebot wurde in Rechnung umgewandelt.',
+        });
         router.push(`/invoices/${response.data.invoiceId}`);
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Angebot konnte nicht umgewandelt werden.',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error converting quote:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Angebot konnte nicht umgewandelt werden.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -162,8 +206,8 @@ export default function QuoteDetailPage() {
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold tracking-tight">{quote.quoteNumber}</h1>
-              <Badge variant={statusConfig[quote.status].variant} className="text-base px-3 py-1">
-                {statusConfig[quote.status].label}
+              <Badge variant={quoteStatusConfig[quote.status].variant} className="text-base px-3 py-1">
+                {quoteStatusConfig[quote.status].label}
               </Badge>
             </div>
             <p className="text-muted-foreground">
@@ -183,7 +227,7 @@ export default function QuoteDetailPage() {
                 <SelectContent>
                   {getAvailableStatuses(quote.status).map((status) => (
                     <SelectItem key={status} value={status}>
-                      {statusConfig[status].label}
+                      {quoteStatusConfig[status].label}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -15,13 +15,7 @@ import { Button } from '@/components/ui/button';
 import { accountingApi } from '@/lib/api/accounting';
 import type { TrialBalance, TrialBalanceAccount } from '@/types';
 import { Loader2, Calendar as CalendarIcon, Download, RefreshCw } from 'lucide-react';
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
-}
+import { formatCurrency } from '@/lib/constants';
 
 function translateAccountType(type: string): string {
   const map: Record<string, string> = {

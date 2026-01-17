@@ -33,26 +33,7 @@ import {
 } from '@/components/ui/dialog';
 import { Quote, QuoteStatus } from '@/types';
 import { quotesApi } from '@/lib/api';
-
-const statusConfig: Record<QuoteStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  draft: { label: 'Entwurf', variant: 'secondary' },
-  sent: { label: 'Gesendet', variant: 'default' },
-  accepted: { label: 'Angenommen', variant: 'outline' },
-  rejected: { label: 'Abgelehnt', variant: 'destructive' },
-  expired: { label: 'Abgelaufen', variant: 'secondary' },
-  converted: { label: 'Umgewandelt', variant: 'outline' },
-};
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('de-DE');
-}
+import { quoteStatusConfig, formatCurrency, formatDate } from '@/lib/constants';
 
 export default function QuotesPage() {
   const router = useRouter();
@@ -277,24 +258,24 @@ export default function QuotesPage() {
                             onValueChange={(value) => handleStatusChange(quote, value as QuoteStatus)}
                           >
                             <SelectTrigger className="w-[140px] h-8">
-                              <Badge variant={statusConfig[quote.status].variant}>
-                                {statusConfig[quote.status].label}
+                              <Badge variant={quoteStatusConfig[quote.status].variant}>
+                                {quoteStatusConfig[quote.status].label}
                               </Badge>
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value={quote.status} disabled>
-                                {statusConfig[quote.status].label}
+                                {quoteStatusConfig[quote.status].label}
                               </SelectItem>
                               {getAvailableStatuses(quote.status).map((status) => (
                                 <SelectItem key={status} value={status}>
-                                  {statusConfig[status].label}
+                                  {quoteStatusConfig[status].label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                         ) : (
-                          <Badge variant={statusConfig[quote.status].variant}>
-                            {statusConfig[quote.status].label}
+                          <Badge variant={quoteStatusConfig[quote.status].variant}>
+                            {quoteStatusConfig[quote.status].label}
                           </Badge>
                         )}
                       </TableCell>

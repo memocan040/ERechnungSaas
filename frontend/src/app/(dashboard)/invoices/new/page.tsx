@@ -30,6 +30,7 @@ import { useToast } from '@/hooks/use-toast';
 import { InvoicePreview } from '@/components/invoice/invoice-preview';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomerSelector } from '@/components/form/customer-selector';
+import { formatCurrency } from '@/lib/constants';
 
 interface InvoiceItemForm {
   description: string;
@@ -37,13 +38,6 @@ interface InvoiceItemForm {
   unit: string;
   unitPrice: number;
   taxRate: number;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
 }
 
 export default function NewInvoicePage() {

@@ -15,8 +15,14 @@ KRITISCHE BUGS:
       Auch behoben in: invoice-preview.tsx, company/page.tsx
 
 VERBESSERUNGEN:
-- [ ] Fehlerbehandlung: alert() durch Toast-Benachrichtigungen ersetzen
-- [ ] Code-Duplizierung: Status-Konfiguration in eine zentrale Datei auslagern
+- [x] Fehlerbehandlung: alert() durch Toast-Benachrichtigungen ersetzen (BEHOBEN 17.01.2026)
+      Lösung: Toast-Benachrichtigungen in quotes/[id]/page.tsx hinzugefügt
+      Funktionen: loadQuote, handleDownloadPdf, handleStatusChange, handleConvertToInvoice
+- [x] Code-Duplizierung: Status-Konfiguration in eine zentrale Datei auslagern (BEHOBEN 17.01.2026)
+      Lösung: Zentrale Konfigurationsdatei /lib/constants.ts erstellt
+      Exported: quoteStatusConfig, invoiceStatusConfig, expenseStatusConfig
+      Aktualisierte Dateien: quotes/[id]/page.tsx, quotes/page.tsx, invoices/page.tsx,
+                            invoices/[id]/page.tsx, quote-preview.tsx, invoice-preview.tsx
 - [ ] E-Mail-Benachrichtigungen bei Statusänderungen implementieren
 - [ ] Automatische Ablauf-Prüfung (checkExpiredQuotes) als Scheduler einrichten
 - [ ] Tests hinzufügen (Unit + Integration)
@@ -142,13 +148,17 @@ VERBESSERUNGEN:
 ================================================================================
 
 CODE-QUALITÄT:
-- [x] alert() überall durch Toast-Benachrichtigungen ersetzen (BEHOBEN 16.01.2026)
-      Files: invoices/new, accounting/journal, customers/new, customers/[id]
+- [x] alert() überall durch Toast-Benachrichtigungen ersetzen (BEHOBEN 17.01.2026)
+      Files: invoices/new, accounting/journal, customers/new, customers/[id], quotes/[id]
 - [ ] Einheitliche Fehlerbehandlung implementieren
-- [ ] Gemeinsame Utility-Funktionen zentralisieren:
-      - formatCurrency()
-      - formatDate()
-      - Status-Labels und -Farben
+- [x] Gemeinsame Utility-Funktionen zentralisieren (BEHOBEN 17.01.2026)
+      Lösung: Zentrale /lib/constants.ts erstellt mit:
+      - formatCurrency() - Formatiert Beträge als EUR
+      - formatDate() - Formatiert Datum im deutschen Format
+      - formatDateTime() - Formatiert Datum mit Uhrzeit
+      - Status-Konfigurationen (quoteStatusConfig, invoiceStatusConfig, expenseStatusConfig)
+      Aktualisierte Dateien: quotes/*, invoices/*, components/dashboard/*,
+                            accounting/trial-balance, quote-form, invoice-preview, quote-preview
 - [ ] TypeScript strict mode aktivieren
 - [ ] ESLint-Regeln verschärfen
 

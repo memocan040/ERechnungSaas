@@ -12,16 +12,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import type { MonthlyRevenue } from '@/types';
+import { formatCurrency } from '@/lib/constants';
 
 interface RevenueChartProps {
   data: MonthlyRevenue[];
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
 }
 
 function formatMonth(monthStr: string): string {

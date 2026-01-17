@@ -33,25 +33,7 @@ import {
 import { Invoice, InvoiceStatus } from '@/types';
 import { invoicesApi } from '@/lib/api';
 import { XmlImportDialog } from '@/components/invoice/xml-import-dialog';
-
-const statusConfig: Record<InvoiceStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  draft: { label: 'Entwurf', variant: 'secondary' },
-  sent: { label: 'Gesendet', variant: 'default' },
-  paid: { label: 'Bezahlt', variant: 'outline' },
-  overdue: { label: 'Überfällig', variant: 'destructive' },
-  cancelled: { label: 'Storniert', variant: 'secondary' },
-};
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('de-DE');
-}
+import { invoiceStatusConfig, formatCurrency, formatDate } from '@/lib/constants';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -250,8 +232,8 @@ export default function InvoicesPage() {
                           onValueChange={(value) => handleStatusChange(invoice, value as InvoiceStatus)}
                         >
                           <SelectTrigger className="w-[130px] h-8">
-                            <Badge variant={statusConfig[invoice.status].variant}>
-                              {statusConfig[invoice.status].label}
+                            <Badge variant={invoiceStatusConfig[invoice.status].variant}>
+                              {invoiceStatusConfig[invoice.status].label}
                             </Badge>
                           </SelectTrigger>
                           <SelectContent>

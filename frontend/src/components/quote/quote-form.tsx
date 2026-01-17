@@ -20,6 +20,7 @@ import { Quote, Customer, Company } from '@/types';
 import { quotesApi, settingsApi, companyApi } from '@/lib/api';
 import { QuotePreview } from './quote-preview';
 import { CustomerSelector } from '@/components/form/customer-selector';
+import { formatCurrency } from '@/lib/constants';
 
 interface QuoteItemForm {
   description: string;
@@ -32,13 +33,6 @@ interface QuoteItemForm {
 interface QuoteFormProps {
   initialData?: Quote;
   isEditing?: boolean;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount);
 }
 
 export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
