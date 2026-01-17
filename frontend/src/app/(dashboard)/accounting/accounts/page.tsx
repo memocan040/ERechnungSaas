@@ -32,8 +32,10 @@ import {
 import { Label } from '@/components/ui/label';
 import { ChartOfAccount, AccountType, AccountClass } from '@/types';
 import { accountingApi } from '@/lib/api/accounting';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ChartOfAccountsPage() {
+  const { toast } = useToast();
   const [accounts, setAccounts] = useState<ChartOfAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -87,13 +89,20 @@ export default function ChartOfAccountsPage() {
     try {
       const response = await accountingApi.seedStandardAccounts('SKR03');
       if (response.success && response.data) {
-        alert(`${response.data.created} Konten erstellt, ${response.data.skipped} übersprungen`);
+        toast({
+          title: 'Erfolg',
+          description: `${response.data.created} Konten erstellt, ${response.data.skipped} übersprungen`,
+        });
         loadAccounts();
         setSeedDialog(false);
       }
     } catch (error) {
       console.error('Error seeding accounts:', error);
-      alert('Fehler beim Erstellen der Standardkonten');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Erstellen der Standardkonten',
+        variant: 'destructive',
+      });
     } finally {
       setSeeding(false);
     }
@@ -101,7 +110,11 @@ export default function ChartOfAccountsPage() {
 
   const handleCreateAccount = async () => {
     if (!newAccount.accountNumber || !newAccount.accountName) {
-      alert('Bitte Kontonummer und Kontoname ausfüllen');
+      toast({
+        title: 'Fehler',
+        description: 'Bitte Kontonummer und Kontoname ausfüllen',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -109,6 +122,10 @@ export default function ChartOfAccountsPage() {
     try {
       const response = await accountingApi.createAccount(newAccount);
       if (response.success) {
+        toast({
+          title: 'Erfolg',
+          description: 'Konto erstellt',
+        });
         loadAccounts();
         setCreateDialog(false);
         setNewAccount({
@@ -121,7 +138,11 @@ export default function ChartOfAccountsPage() {
       }
     } catch (error) {
       console.error('Error creating account:', error);
-      alert('Fehler beim Erstellen des Kontos');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Erstellen des Kontos',
+        variant: 'destructive',
+      });
     } finally {
       setCreating(false);
     }

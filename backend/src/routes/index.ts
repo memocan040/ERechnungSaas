@@ -10,6 +10,7 @@ import accountingRoutes from './accounting.routes';
 import expensesRoutes from './expenses.routes';
 import vendorsRoutes from './vendors.routes';
 import invoiceDesignRoutes from './invoice-design.routes';
+import incomingInvoicesRoutes from './incoming-invoices.routes';
 import { notFound } from '../middleware/errorHandler';
 
 const router = Router();
@@ -26,6 +27,7 @@ router.use('/accounting', accountingRoutes);
 router.use('/expenses', expensesRoutes);
 router.use('/vendors', vendorsRoutes);
 router.use('/invoice-design', invoiceDesignRoutes);
+router.use('/incoming-invoices', incomingInvoicesRoutes);
 
 // 404 handler for API routes
 router.use(notFound);

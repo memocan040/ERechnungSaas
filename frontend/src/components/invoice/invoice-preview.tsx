@@ -78,7 +78,7 @@ export function InvoicePreview({ invoiceData }: InvoicePreviewProps) {
                     {company.logoUrl && (
                       <div className="mb-4">
                         <img
-                          src={`http://localhost:3001${company.logoUrl}`}
+                          src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3001'}${company.logoUrl}`}
                           alt="Company Logo"
                           className="max-h-16 object-contain"
                         />

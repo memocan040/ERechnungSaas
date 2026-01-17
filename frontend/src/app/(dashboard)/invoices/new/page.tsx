@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/table';
 import { Customer, InvoiceItem, Company } from '@/types';
 import { invoicesApi, settingsApi, companyApi } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 import { InvoicePreview } from '@/components/invoice/invoice-preview';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomerSelector } from '@/components/form/customer-selector';
@@ -47,6 +48,7 @@ function formatCurrency(amount: number): string {
 
 export default function NewInvoicePage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
@@ -148,12 +150,20 @@ export default function NewInvoicePage() {
     e.preventDefault();
 
     if (!selectedCustomerId) {
-      alert('Bitte wählen Sie einen Kunden aus.');
+      toast({
+        title: "Fehler",
+        description: "Bitte wählen Sie einen Kunden aus.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (items.some((item) => !item.description || item.unitPrice <= 0)) {
-      alert('Bitte füllen Sie alle Positionen vollständig aus.');
+      toast({
+        title: "Fehler",
+        description: "Bitte füllen Sie alle Positionen vollständig aus.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -176,13 +186,25 @@ export default function NewInvoicePage() {
       });
 
       if (response.success && response.data) {
+        toast({
+          title: "Erfolg",
+          description: "Rechnung wurde erfolgreich erstellt.",
+        });
         router.push(`/invoices/${response.data.id}`);
       } else {
-        alert(response.error || 'Fehler beim Erstellen der Rechnung');
+        toast({
+          title: "Fehler",
+          description: response.error || 'Fehler beim Erstellen der Rechnung',
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error creating invoice:', error);
-      alert('Fehler beim Erstellen der Rechnung');
+      toast({
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

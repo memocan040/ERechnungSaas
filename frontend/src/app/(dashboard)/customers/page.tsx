@@ -25,8 +25,10 @@ import {
 } from '@/components/ui/dialog';
 import { Customer } from '@/types';
 import { customersApi } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 export default function CustomersPage() {
+  const { toast } = useToast();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -78,12 +80,25 @@ export default function CustomersPage() {
     try {
       const response = await customersApi.delete(deleteDialog.customer.id);
       if (response.success) {
+        toast({
+          title: 'Erfolg',
+          description: 'Kunde gelöscht',
+        });
         loadCustomers();
       } else {
-        alert(response.error || 'Fehler beim Löschen');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Löschen',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error deleting customer:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Löschen',
+        variant: 'destructive',
+      });
     } finally {
       setDeleteDialog({ open: false, customer: null });
     }

@@ -1,15 +1,85 @@
 'use client';
 
-import { Euro, FileText, AlertCircle, TrendingUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Euro, FileText, AlertCircle, TrendingUp, Loader2 } from 'lucide-react';
 import {
     StatCard,
     RevenueChart,
     StatusChart,
     RecentInvoices,
 } from '@/components/dashboard';
-import { dashboardStats, formatCurrency } from '@/lib/mock-data';
+import { reportsApi, invoicesApi } from '@/lib/api';
+import type { DashboardStats, MonthlyRevenue, StatusDistribution, Invoice } from '@/types';
+
+function formatCurrency(amount: number, currency: string = 'EUR'): string {
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
 
 export default function DashboardPage() {
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenue[]>([]);
+    const [statusDistribution, setStatusDistribution] = useState<StatusDistribution[]>([]);
+    const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
+
+    useEffect(() => {
+        loadDashboardData();
+    }, []);
+
+    const loadDashboardData = async () => {
+        try {
+            setLoading(true);
+
+            // Load all dashboard data in parallel
+            const [statsRes, revenueRes, statusRes, invoicesRes] = await Promise.all([
+                reportsApi.getDashboardStats(),
+                reportsApi.getRevenueByMonth(),
+                reportsApi.getInvoiceStatusSummary(),
+                invoicesApi.getAll({ limit: 5 }),
+            ]);
+
+            if (statsRes.success && statsRes.data) {
+                setStats(statsRes.data);
+            }
+            if (revenueRes.success && revenueRes.data) {
+                setMonthlyRevenue(revenueRes.data);
+            }
+            if (statusRes.success && statusRes.data) {
+                setStatusDistribution(statusRes.data);
+            }
+            if (invoicesRes.success && invoicesRes.data) {
+                setRecentInvoices(invoicesRes.data);
+            }
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+        );
+    }
+
+    // Calculate trend (compare current month to last month)
+    const currentMonthRevenue = stats?.revenueThisMonth || 0;
+    const lastMonthRevenue = stats?.revenueLastMonth || 1; // Avoid division by zero
+    const revenueTrend = lastMonthRevenue > 0
+        ? ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
+        : 0;
+
+    // Calculate average invoice value
+    const totalInvoices = stats?.totalInvoices || 0;
+    const totalRevenue = stats?.totalRevenue || 0;
+    const avgInvoiceValue = totalInvoices > 0 ? totalRevenue / totalInvoices : 0;
+
     return (
         <div className="space-y-8">
             {/* Page Header */}
@@ -28,36 +98,34 @@ export default function DashboardPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                     title="Umsatz (aktueller Monat)"
-                    value={formatCurrency(dashboardStats.totalRevenue)}
+                    value={formatCurrency(currentMonthRevenue)}
                     icon={Euro}
-                    trend={{ value: 12.5, isPositive: true }}
+                    trend={revenueTrend !== 0 ? { value: Math.abs(revenueTrend), isPositive: revenueTrend > 0 } : undefined}
                     description="vs. letzter Monat"
                     iconColor="from-violet-500 to-purple-600"
                     delay={100}
                 />
                 <StatCard
                     title="Offene Rechnungen"
-                    value={formatCurrency(dashboardStats.outstandingInvoices)}
+                    value={formatCurrency(stats?.outstandingAmount || 0)}
                     icon={FileText}
-                    description={`${dashboardStats.totalInvoices} Rechnungen gesamt`}
+                    description={`${totalInvoices} Rechnungen gesamt`}
                     iconColor="from-blue-500 to-cyan-600"
                     delay={200}
                 />
                 <StatCard
                     title="Überfällige Beträge"
-                    value={formatCurrency(dashboardStats.overdueAmount)}
+                    value={formatCurrency(stats?.overdueAmount || 0)}
                     icon={AlertCircle}
-                    trend={{ value: 5.2, isPositive: false }}
-                    description="vs. letzter Monat"
+                    description="Sofort fällig"
                     iconColor="from-orange-500 to-red-600"
                     delay={300}
                 />
                 <StatCard
                     title="Durchschn. Rechnungswert"
-                    value={formatCurrency(dashboardStats.totalRevenue / 12)}
+                    value={formatCurrency(avgInvoiceValue)}
                     icon={TrendingUp}
-                    trend={{ value: 8.1, isPositive: true }}
-                    description="letzte 12 Monate"
+                    description="Alle Rechnungen"
                     iconColor="from-emerald-500 to-teal-600"
                     delay={400}
                 />
@@ -65,12 +133,19 @@ export default function DashboardPage() {
 
             {/* Charts Grid */}
             <div className="grid gap-4 lg:grid-cols-3">
-                <RevenueChart />
-                <StatusChart />
+                <RevenueChart data={monthlyRevenue} />
+                <StatusChart data={statusDistribution} />
             </div>
 
             {/* Recent Invoices */}
-            <RecentInvoices />
+            <RecentInvoices
+                invoices={recentInvoices}
+                stats={{
+                    outstanding: stats?.outstandingAmount || 0,
+                    overdue: stats?.overdueAmount || 0,
+                    total: totalInvoices,
+                }}
+            />
         </div>
     );
 }

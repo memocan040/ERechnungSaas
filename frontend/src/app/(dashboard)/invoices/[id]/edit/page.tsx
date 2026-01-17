@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Save, Eye } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Plus, Trash2, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -16,22 +16,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Quote, Customer, Company } from '@/types';
-import { quotesApi, settingsApi, companyApi } from '@/lib/api';
-import { QuotePreview } from './quote-preview';
+import { Customer, Company, Invoice } from '@/types';
+import { invoicesApi, companyApi } from '@/lib/api';
+import { InvoicePreview } from '@/components/invoice/invoice-preview';
 import { CustomerSelector } from '@/components/form/customer-selector';
+import { useToast } from '@/hooks/use-toast';
 
-interface QuoteItemForm {
+interface InvoiceItemForm {
+  id?: string;
   description: string;
   quantity: number;
   unit: string;
   unitPrice: number;
   taxRate: number;
-}
-
-interface QuoteFormProps {
-  initialData?: Quote;
-  isEditing?: boolean;
 }
 
 function formatCurrency(amount: number): string {
@@ -41,81 +38,100 @@ function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
+export default function EditInvoicePage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  
-  // Form State
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>(initialData?.customerId || '');
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(initialData?.customer);
-  const [issueDate, setIssueDate] = useState(
-    initialData?.issueDate 
-      ? new Date(initialData.issueDate).toISOString().split('T')[0] 
-      : new Date().toISOString().split('T')[0]
-  );
-  const [validUntil, setValidUntil] = useState(
-    initialData?.validUntil 
-      ? new Date(initialData.validUntil).toISOString().split('T')[0] 
-      : ''
-  );
-  const [notes, setNotes] = useState(initialData?.notes || '');
-  const [termsConditions, setTermsConditions] = useState(initialData?.termsConditions || '');
-  const [company, setCompany] = useState<Company | undefined>(initialData?.company);
-  
-  const [items, setItems] = useState<QuoteItemForm[]>(
-    initialData?.items?.map(item => ({
-      description: item.description,
-      quantity: item.quantity,
-      unit: item.unit,
-      unitPrice: item.unitPrice,
-      taxRate: item.taxRate,
-    })) || [{ description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 }]
-  );
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const invoiceId = params.id as string;
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
+  const [issueDate, setIssueDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [notes, setNotes] = useState('');
+  const [paymentTerms, setPaymentTerms] = useState('');
+  const [company, setCompany] = useState<Company | undefined>(undefined);
+  const [items, setItems] = useState<InvoiceItemForm[]>([]);
 
   useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const response = await settingsApi.get();
-        if (response.success && response.data) {
-          const settings = response.data;
-          const valid = new Date();
-          valid.setDate(valid.getDate() + 30); // Default 30 days validity
-          setValidUntil(valid.toISOString().split('T')[0]);
+    loadInvoice();
+    loadCompany();
+  }, [invoiceId]);
 
-          setItems([
-            { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: settings.defaultTaxRate },
-          ]);
+  const loadInvoice = async () => {
+    try {
+      setLoading(true);
+      const response = await invoicesApi.getById(invoiceId);
+      if (response.success && response.data) {
+        const inv = response.data;
+        setInvoice(inv);
+
+        // Only allow editing draft invoices
+        if (inv.status !== 'draft') {
+          toast({
+            title: 'Nicht bearbeitbar',
+            description: 'Nur Rechnungen im Entwurf-Status können bearbeitet werden.',
+            variant: 'destructive',
+          });
+          router.push(`/invoices/${invoiceId}`);
+          return;
         }
-      } catch (error) {
-        console.error('Error loading settings:', error);
-        const valid = new Date();
-        valid.setDate(valid.getDate() + 30);
-        setValidUntil(valid.toISOString().split('T')[0]);
-      } finally {
-        setSettingsLoaded(true);
-      }
-    };
 
-    const loadCompany = async () => {
-      try {
-        const response = await companyApi.get();
-        if (response.success && response.data) {
-          setCompany(response.data);
+        // Populate form fields
+        setSelectedCustomerId(inv.customerId);
+        setSelectedCustomer(inv.customer);
+        setIssueDate(inv.issueDate?.split('T')[0] || '');
+        setDueDate(inv.dueDate?.split('T')[0] || '');
+        setNotes(inv.notes || '');
+        setPaymentTerms(inv.paymentTerms || '');
+
+        // Populate items
+        if (inv.items && inv.items.length > 0) {
+          setItems(inv.items.map(item => ({
+            id: item.id,
+            description: item.description,
+            quantity: item.quantity,
+            unit: item.unit,
+            unitPrice: item.unitPrice,
+            taxRate: item.taxRate,
+          })));
+        } else {
+          setItems([{ description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 }]);
         }
-      } catch (error) {
-        console.error('Error loading company:', error);
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Rechnung konnte nicht geladen werden.',
+          variant: 'destructive',
+        });
+        router.push('/invoices');
       }
-    };
-
-    if (!initialData && !settingsLoaded) {
-      loadSettings();
-      loadCompany();
-    } else if (!company) {
-      loadCompany();
+    } catch (error) {
+      console.error('Error loading invoice:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Rechnung konnte nicht geladen werden.',
+        variant: 'destructive',
+      });
+      router.push('/invoices');
+    } finally {
+      setLoading(false);
     }
-  }, [initialData, company, settingsLoaded]);
+  };
+
+  const loadCompany = async () => {
+    try {
+      const response = await companyApi.get();
+      if (response.success && response.data) {
+        setCompany(response.data);
+      }
+    } catch (error) {
+      console.error('Error loading company:', error);
+    }
+  };
 
   const handleCustomerChange = (id: string, customer?: Customer) => {
     setSelectedCustomerId(id);
@@ -129,20 +145,19 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
     ]);
   };
 
-
   const removeItem = (index: number) => {
     if (items.length > 1) {
       setItems(items.filter((_, i) => i !== index));
     }
   };
 
-  const updateItem = (index: number, field: keyof QuoteItemForm, value: string | number) => {
+  const updateItem = (index: number, field: keyof InvoiceItemForm, value: string | number) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
   };
 
-  const calculateItemTotal = (item: QuoteItemForm) => {
+  const calculateItemTotal = (item: InvoiceItemForm) => {
     const subtotal = item.quantity * item.unitPrice;
     const tax = subtotal * (item.taxRate / 100);
     return subtotal + tax;
@@ -186,15 +201,15 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
 
     try {
-      const quoteData = {
+      const response = await invoicesApi.update(invoiceId, {
         customerId: selectedCustomerId,
         issueDate,
-        validUntil,
+        dueDate,
         notes: notes || undefined,
-        termsConditions: termsConditions || undefined,
+        paymentTerms: paymentTerms || undefined,
         items: items.map((item) => ({
           description: item.description,
           quantity: item.quantity,
@@ -202,78 +217,102 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
           unitPrice: item.unitPrice,
           taxRate: item.taxRate,
         })),
-      };
+      });
 
-      let response;
-      if (isEditing && initialData) {
-        response = await quotesApi.update(initialData.id, quoteData);
-      } else {
-        response = await quotesApi.create(quoteData);
-      }
-
-      if (response.success && response.data) {
+      if (response.success) {
         toast({
           title: 'Erfolg',
-          description: isEditing ? 'Angebot aktualisiert' : 'Angebot erstellt',
+          description: 'Rechnung wurde gespeichert.',
         });
-        router.push('/quotes');
+        router.push(`/invoices/${invoiceId}`);
       } else {
         toast({
           title: 'Fehler',
-          description: response.error || 'Fehler beim Speichern des Angebots',
+          description: response.error || 'Fehler beim Speichern der Rechnung.',
           variant: 'destructive',
         });
       }
     } catch (error) {
-      console.error('Error saving quote:', error);
+      console.error('Error updating invoice:', error);
       toast({
         title: 'Fehler',
-        description: 'Fehler beim Speichern des Angebots',
+        description: 'Fehler beim Speichern der Rechnung.',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  const totals = calculateTotals();
-  
-  // Use selectedCustomer from state
-  const previewCustomer = selectedCustomer || (initialData?.customerId === selectedCustomerId ? initialData?.customer : undefined);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
-  const previewQuote = {
-    quoteNumber: initialData?.quoteNumber || 'VORSCHAU',
-    status: (initialData?.status || 'draft') as Quote['status'],
+  if (!invoice) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <h2 className="text-xl font-semibold">Rechnung nicht gefunden</h2>
+        <Link href="/invoices">
+          <Button className="mt-4">Zurück zur Übersicht</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const totals = calculateTotals();
+
+  const previewInvoice = {
+    invoiceNumber: invoice.invoiceNumber,
+    status: 'draft' as const,
     issueDate,
-    validUntil,
+    dueDate,
     items: items,
     subtotal: totals.subtotal,
     taxAmount: totals.taxAmount,
     total: totals.total,
-    customer: previewCustomer,
+    customer: selectedCustomer,
     company: company,
     notes,
-    termsConditions
+    paymentTerms
   };
 
   return (
-    <div className="flex-1 min-h-0 grid lg:grid-cols-2 gap-6">
+    <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col">
+      <div className="flex items-center gap-4 flex-none">
+        <Link href={`/invoices/${invoiceId}`}>
+          <Button variant="ghost" size="icon">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Rechnung bearbeiten</h1>
+          <p className="text-muted-foreground">
+            {invoice.invoiceNumber}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 grid lg:grid-cols-2 gap-6">
         {/* Left Column - Form */}
         <div className="overflow-y-auto pr-2 pb-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Angebotsdetails</CardTitle>
+                <CardTitle>Rechnungsdetails</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <CustomerSelector 
-                  value={selectedCustomerId} 
-                  onChange={handleCustomerChange} 
-                  required 
+                <CustomerSelector
+                  value={selectedCustomerId}
+                  onChange={handleCustomerChange}
+                  required
                 />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="issueDate">Angebotsdatum *</Label>
+                    <Label htmlFor="issueDate">Rechnungsdatum *</Label>
                     <Input
                       id="issueDate"
                       type="date"
@@ -283,12 +322,12 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="validUntil">Gültig bis *</Label>
+                    <Label htmlFor="dueDate">Fälligkeitsdatum *</Label>
                     <Input
-                      id="validUntil"
+                      id="dueDate"
                       type="date"
-                      value={validUntil}
-                      onChange={(e) => setValidUntil(e.target.value)}
+                      value={dueDate}
+                      onChange={(e) => setDueDate(e.target.value)}
                       required
                     />
                   </div>
@@ -409,12 +448,12 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="termsConditions">Bedingungen</Label>
+                  <Label htmlFor="paymentTerms">Zahlungsbedingungen</Label>
                   <Input
-                    id="termsConditions"
-                    placeholder="z.B. Gültig für 30 Tage"
-                    value={termsConditions}
-                    onChange={(e) => setTermsConditions(e.target.value)}
+                    id="paymentTerms"
+                    placeholder="z.B. Zahlbar innerhalb von 14 Tagen ohne Abzug"
+                    value={paymentTerms}
+                    onChange={(e) => setPaymentTerms(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -429,7 +468,7 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
                 </div>
               </CardContent>
             </Card>
-            
+
              <Card>
               <CardHeader>
                 <CardTitle>Zusammenfassung</CardTitle>
@@ -452,13 +491,13 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
+            <Button type="submit" className="w-full" disabled={saving}>
+              {saving ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              {isEditing ? 'Angebot aktualisieren' : 'Angebot erstellen'}
+              Änderungen speichern
             </Button>
           </form>
         </div>
@@ -470,9 +509,10 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
              <span className="font-medium text-sm">Live-Vorschau</span>
           </div>
           <div className="flex-1 bg-background rounded-md shadow-sm overflow-hidden border">
-             <QuotePreview quoteData={previewQuote} />
+             <InvoicePreview invoiceData={previewInvoice} />
           </div>
         </div>
       </div>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { query } from '../config/database';
+import ledgerService from './ledger.service';
 import {
   Vendor,
   CreateVendorData,
@@ -9,6 +10,8 @@ import {
   UpdateExpenseData,
   ExpenseCategory,
   CostCenter,
+  CreateJournalEntryData,
+  JournalEntryLine,
 } from '../types';
 import { AppError } from '../middleware/errorHandler';
 
@@ -300,18 +303,39 @@ export class ExpenseService {
       params
     );
 
-    const expenses: Expense[] = [];
-    for (const row of expensesResult.rows) {
-      const expense = this.mapExpense(row);
+    // Map expenses first
+    const expenses: Expense[] = expensesResult.rows.map((row) => this.mapExpense(row));
 
-      // Get items
+    // Get all expense IDs
+    const expenseIds = expenses.map((e) => e.id);
+
+    // Fetch all items in a single query (fixes N+1 problem)
+    if (expenseIds.length > 0) {
       const itemsResult = await query(
-        'SELECT * FROM expense_items WHERE expense_id = $1 ORDER BY position',
-        [expense.id]
+        `SELECT * FROM expense_items
+         WHERE expense_id = ANY($1)
+         ORDER BY expense_id, position`,
+        [expenseIds]
       );
-      expense.items = itemsResult.rows.map(this.mapExpenseItem);
 
-      expenses.push(expense);
+      // Group items by expense_id
+      const itemsByExpenseId = new Map<string, ExpenseItem[]>();
+      for (const row of itemsResult.rows) {
+        const item = this.mapExpenseItem(row);
+        const existing = itemsByExpenseId.get(row.expense_id) || [];
+        existing.push(item);
+        itemsByExpenseId.set(row.expense_id, existing);
+      }
+
+      // Assign items to expenses
+      for (const expense of expenses) {
+        expense.items = itemsByExpenseId.get(expense.id) || [];
+      }
+    } else {
+      // No expenses, no items
+      for (const expense of expenses) {
+        expense.items = [];
+      }
     }
 
     return { expenses, total };
@@ -601,6 +625,114 @@ export class ExpenseService {
       updates.push(`paid_date = CURRENT_DATE`);
     }
 
+    // Handle accounting integration when approving
+    let journalEntryId: string | null = null;
+    
+    if (status === 'approved' && !expense.journalEntryId) {
+      // 1. Get necessary accounts
+      // Liability Account (Verbindlichkeiten aus LuL - 1600)
+      const liabilityAccount = await ledgerService.getAccountByNumber(userId, '1600');
+      if (!liabilityAccount) {
+        throw new AppError('Standard Liability Account (1600) not found. Please seed accounts.', 400);
+      }
+
+      // Input Tax Account (Vorsteuer 19% - 1576) - simplified, assuming 19% for now or logic based on rate
+      // Ideally we should look this up based on the tax rate of items
+      const taxAccount19 = await ledgerService.getAccountByNumber(userId, '1576');
+      const taxAccount7 = await ledgerService.getAccountByNumber(userId, '1571');
+
+      // 2. Build Journal Entry Lines
+      const lines: any[] = [];
+      let totalTax19 = 0;
+      let totalTax7 = 0;
+
+      // Expense Lines (Debit)
+      for (const item of expense.items || []) {
+        if (!item.accountId) {
+           // Try to find default account from category if not on item
+           if (expense.categoryId) {
+             const categoryResult = await query(
+               'SELECT default_account_id FROM expense_categories WHERE id = $1', 
+               [expense.categoryId]
+             );
+             if (categoryResult.rows.length > 0 && categoryResult.rows[0].default_account_id) {
+               item.accountId = categoryResult.rows[0].default_account_id;
+             }
+           }
+        }
+
+        if (!item.accountId) {
+          throw new AppError(`Expense item "${item.description}" has no account assigned.`, 400);
+        }
+
+        lines.push({
+          accountId: item.accountId,
+          debitAmount: item.subtotal, // Net amount
+          creditAmount: 0,
+          description: item.description,
+          costCenterId: item.costCenterId || expense.costCenterId,
+          taxCode: item.taxRate.toString(),
+          taxAmount: item.taxAmount,
+        });
+
+        if (item.taxRate === 19) totalTax19 += item.taxAmount;
+        else if (item.taxRate === 7) totalTax7 += item.taxAmount;
+      }
+
+      // Tax Lines (Debit)
+      if (totalTax19 > 0) {
+        if (!taxAccount19) throw new AppError('Tax Account (1576) not found.', 400);
+        lines.push({
+          accountId: taxAccount19.id,
+          debitAmount: totalTax19,
+          creditAmount: 0,
+          description: 'Vorsteuer 19%',
+        });
+      }
+      
+      if (totalTax7 > 0) {
+        if (!taxAccount7) throw new AppError('Tax Account (1571) not found.', 400);
+        lines.push({
+          accountId: taxAccount7.id,
+          debitAmount: totalTax7,
+          creditAmount: 0,
+          description: 'Vorsteuer 7%',
+        });
+      }
+
+      // Liability Line (Credit)
+      lines.push({
+        accountId: liabilityAccount.id,
+        debitAmount: 0,
+        creditAmount: expense.total, // Gross amount
+        description: `Eingangsrechnung ${expense.vendorInvoiceNumber || ''} - ${expense.vendor?.companyName || ''}`,
+      });
+
+      // 3. Create Journal Entry
+      const journalEntryData: CreateJournalEntryData = {
+        entryDate: new Date().toISOString(), // Booking date = Approval date? Or Expense date? Usually Invoice Date (expenseDate)
+        postingDate: new Date().toISOString(),
+        entryType: 'expense',
+        description: `Eingangsrechnung: ${expense.vendor?.companyName || 'Unbekannt'}`,
+        notes: `Generiert aus Ausgabe ${expense.expenseNumber}`,
+        lines: lines,
+      };
+      
+      // Override entry date with expense date if possible, but posting date is now
+      journalEntryData.entryDate = expense.expenseDate.toISOString();
+
+      const journalEntry = await ledgerService.createJournalEntry(userId, journalEntryData);
+      
+      // 4. Post it
+      await ledgerService.postJournalEntry(userId, journalEntry.id);
+      
+      journalEntryId = journalEntry.id;
+      
+      updates.push(`journal_entry_id = $${paramIndex}`);
+      params.push(journalEntryId);
+      paramIndex++;
+    }
+
     params.push(expenseId, userId);
 
     await query(
@@ -640,6 +772,40 @@ export class ExpenseService {
 
     const nextNumber = settingsResult.rows[0].next_expense_number;
     return `EXP-${String(nextNumber).padStart(5, '0')}`;
+  }
+
+  async uploadReceipt(userId: string, expenseId: string, file: Express.Multer.File): Promise<Expense> {
+    const expense = await this.getExpenseById(userId, expenseId);
+    
+    // Ensure uploads/receipts directory exists
+    const fs = await import('fs');
+    const path = await import('path');
+    const uploadDir = path.join(process.cwd(), 'uploads', 'receipts');
+    
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Generate unique filename
+    const fileExt = path.extname(file.originalname);
+    const filename = `${expenseId}_${Date.now()}${fileExt}`;
+    const filePath = path.join(uploadDir, filename);
+
+    // Save file
+    fs.writeFileSync(filePath, file.buffer);
+
+    // Update database
+    const relativePath = `/uploads/receipts/${filename}`;
+    
+    const result = await query(
+      `UPDATE expenses
+       SET receipt_url = $1, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $2 AND user_id = $3
+       RETURNING *`,
+      [relativePath, expenseId, userId]
+    );
+
+    return this.mapExpense(result.rows[0]);
   }
 
   // ============================================
