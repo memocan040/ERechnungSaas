@@ -632,46 +632,49 @@ export class LedgerService {
   }
 
   async getTrialBalance(userId: string, asOfDate: Date): Promise<TrialBalance> {
-    const accounts = await this.getChartOfAccounts(userId, { includeInactive: false });
+    // Single aggregation query for all accounts with activity (fixes N+1 problem)
+    const result = await query(
+      `SELECT
+         coa.id as account_id,
+         coa.account_number,
+         coa.account_name,
+         coa.account_type,
+         COALESCE(SUM(jel.debit_amount), 0) as total_debit,
+         COALESCE(SUM(jel.credit_amount), 0) as total_credit
+       FROM chart_of_accounts coa
+       LEFT JOIN journal_entry_lines jel ON coa.id = jel.account_id
+       LEFT JOIN journal_entries je ON jel.journal_entry_id = je.id
+         AND je.entry_date <= $2
+         AND je.status = 'posted'
+       WHERE coa.user_id = $1
+         AND coa.is_active = true
+       GROUP BY coa.id, coa.account_number, coa.account_name, coa.account_type
+       HAVING COALESCE(SUM(jel.debit_amount), 0) > 0 OR COALESCE(SUM(jel.credit_amount), 0) > 0
+       ORDER BY coa.account_number`,
+      [userId, asOfDate.toISOString().split('T')[0]]
+    );
 
-    const trialBalanceAccounts: TrialBalanceAccount[] = [];
     let totalDebits = 0;
     let totalCredits = 0;
 
-    for (const account of accounts) {
-      const result = await query(
-        `SELECT
-           COALESCE(SUM(jel.debit_amount), 0) as total_debit,
-           COALESCE(SUM(jel.credit_amount), 0) as total_credit
-         FROM journal_entry_lines jel
-         JOIN journal_entries je ON jel.journal_entry_id = je.id
-         WHERE jel.account_id = $1
-           AND je.entry_date <= $2
-           AND je.status = 'posted'`,
-        [account.id, asOfDate.toISOString().split('T')[0]]
-      );
+    const trialBalanceAccounts: TrialBalanceAccount[] = result.rows.map((row) => {
+      const accountDebit = parseFloat(row.total_debit);
+      const accountCredit = parseFloat(row.total_credit);
+      const balance = accountDebit - accountCredit;
 
-      const accountDebit = parseFloat(result.rows[0].total_debit);
-      const accountCredit = parseFloat(result.rows[0].total_credit);
+      totalDebits += accountDebit;
+      totalCredits += accountCredit;
 
-      // Only include accounts with activity
-      if (accountDebit > 0 || accountCredit > 0) {
-        const balance = accountDebit - accountCredit;
-
-        trialBalanceAccounts.push({
-          accountId: account.id,
-          accountNumber: account.accountNumber,
-          accountName: account.accountName,
-          accountType: account.accountType,
-          totalDebit: accountDebit,
-          totalCredit: accountCredit,
-          balance,
-        });
-
-        totalDebits += accountDebit;
-        totalCredits += accountCredit;
-      }
-    }
+      return {
+        accountId: row.account_id,
+        accountNumber: row.account_number,
+        accountName: row.account_name,
+        accountType: row.account_type,
+        totalDebit: accountDebit,
+        totalCredit: accountCredit,
+        balance,
+      };
+    });
 
     return {
       asOfDate,

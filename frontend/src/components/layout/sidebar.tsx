@@ -22,6 +22,7 @@ import {
   Sparkles,
   BookOpen,
   Wallet,
+  FileInput,
 } from 'lucide-react';
 
 interface NavItem {
@@ -34,6 +35,7 @@ const mainNavItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { title: 'Angebote', href: '/quotes', icon: FileText },
   { title: 'Rechnungen', href: '/invoices', icon: FileText },
+  { title: 'Eingang', href: '/eingang', icon: FileInput },
   { title: 'Kunden', href: '/customers', icon: Users },
   { title: 'Berichte', href: '/reports', icon: BarChart3 },
 ];

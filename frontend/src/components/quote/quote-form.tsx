@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -42,6 +43,7 @@ function formatCurrency(amount: number): string {
 
 export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   
   // Form State
@@ -164,12 +166,20 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
     e.preventDefault();
 
     if (!selectedCustomerId) {
-      alert('Bitte wählen Sie einen Kunden aus.');
+      toast({
+        title: 'Fehler',
+        description: 'Bitte wählen Sie einen Kunden aus.',
+        variant: 'destructive',
+      });
       return;
     }
 
     if (items.some((item) => !item.description || item.unitPrice <= 0)) {
-      alert('Bitte füllen Sie alle Positionen vollständig aus.');
+      toast({
+        title: 'Fehler',
+        description: 'Bitte füllen Sie alle Positionen vollständig aus.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -199,13 +209,25 @@ export function QuoteForm({ initialData, isEditing = false }: QuoteFormProps) {
       }
 
       if (response.success && response.data) {
-        router.push('/quotes'); // Or redirect to view page: `/quotes/${response.data.id}`
+        toast({
+          title: 'Erfolg',
+          description: isEditing ? 'Angebot aktualisiert' : 'Angebot erstellt',
+        });
+        router.push('/quotes');
       } else {
-        alert(response.error || 'Fehler beim Speichern des Angebots');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Speichern des Angebots',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error saving quote:', error);
-      alert('Fehler beim Speichern des Angebots');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern des Angebots',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }

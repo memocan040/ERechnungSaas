@@ -19,8 +19,10 @@ import { UserSettings, User as UserType } from '@/types';
 import { settingsApi, authApi, invoiceDesignApi } from '@/lib/api';
 import { InvoiceDesignSettings, InvoiceTemplate } from '@/lib/api/invoice-design';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SettingsPage() {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
@@ -115,13 +117,24 @@ export default function SettingsPage() {
       const response = await settingsApi.update(formData);
       if (response.success) {
         setSettings(response.data || null);
-        alert('Einstellungen gespeichert');
+        toast({
+          title: 'Erfolg',
+          description: 'Einstellungen gespeichert',
+        });
       } else {
-        alert(response.error || 'Fehler beim Speichern');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Speichern',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      alert('Fehler beim Speichern');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern',
+        variant: 'destructive',
+      });
     } finally {
       setSaving(false);
     }
@@ -133,13 +146,24 @@ export default function SettingsPage() {
       const response = await invoiceDesignApi.update(designFormData);
       if (response.success && response.data) {
         setDesignSettings(response.data);
-        alert('Design-Einstellungen gespeichert');
+        toast({
+          title: 'Erfolg',
+          description: 'Design-Einstellungen gespeichert',
+        });
       } else {
-        alert('Fehler beim Speichern der Design-Einstellungen');
+        toast({
+          title: 'Fehler',
+          description: 'Fehler beim Speichern der Design-Einstellungen',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error saving design:', error);
-      alert('Fehler beim Speichern der Design-Einstellungen');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern der Design-Einstellungen',
+        variant: 'destructive',
+      });
     } finally {
       setSaving(false);
     }
@@ -149,12 +173,20 @@ export default function SettingsPage() {
     e.preventDefault();
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('Die Passwörter stimmen nicht überein');
+      toast({
+        title: 'Fehler',
+        description: 'Die Passwörter stimmen nicht überein',
+        variant: 'destructive',
+      });
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      alert('Das neue Passwort muss mindestens 8 Zeichen lang sein');
+      toast({
+        title: 'Fehler',
+        description: 'Das neue Passwort muss mindestens 8 Zeichen lang sein',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -165,18 +197,29 @@ export default function SettingsPage() {
       );
 
       if (response.success) {
-        alert('Passwort erfolgreich geändert');
+        toast({
+          title: 'Erfolg',
+          description: 'Passwort erfolgreich geändert',
+        });
         setPasswordData({
           currentPassword: '',
           newPassword: '',
           confirmPassword: '',
         });
       } else {
-        alert(response.error || 'Fehler beim Ändern des Passworts');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Ändern des Passworts',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error changing password:', error);
-      alert('Fehler beim Ändern des Passworts');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Ändern des Passworts',
+        variant: 'destructive',
+      });
     }
   };
 

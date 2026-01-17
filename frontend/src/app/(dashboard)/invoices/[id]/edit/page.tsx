@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, Trash2, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,22 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Customer, InvoiceItem, Company } from '@/types';
-import { invoicesApi, settingsApi, companyApi } from '@/lib/api';
-import { useToast } from '@/hooks/use-toast';
+import { Customer, Company, Invoice } from '@/types';
+import { invoicesApi, companyApi } from '@/lib/api';
 import { InvoicePreview } from '@/components/invoice/invoice-preview';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomerSelector } from '@/components/form/customer-selector';
+import { useToast } from '@/hooks/use-toast';
 
 interface InvoiceItemForm {
+  id?: string;
   description: string;
   quantity: number;
   unit: string;
@@ -46,44 +38,87 @@ function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export default function NewInvoicePage() {
+export default function EditInvoicePage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const invoiceId = params.id as string;
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
+  const [issueDate, setIssueDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [notes, setNotes] = useState('');
   const [paymentTerms, setPaymentTerms] = useState('');
   const [company, setCompany] = useState<Company | undefined>(undefined);
-  const [items, setItems] = useState<InvoiceItemForm[]>([
-    { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 },
-  ]);
+  const [items, setItems] = useState<InvoiceItemForm[]>([]);
 
   useEffect(() => {
-    loadSettings();
+    loadInvoice();
     loadCompany();
-  }, []);
+  }, [invoiceId]);
 
-  const loadSettings = async () => {
+  const loadInvoice = async () => {
     try {
-      const response = await settingsApi.get();
+      setLoading(true);
+      const response = await invoicesApi.getById(invoiceId);
       if (response.success && response.data) {
-        const settings = response.data;
-        const due = new Date();
-        due.setDate(due.getDate() + settings.defaultPaymentDays);
-        setDueDate(due.toISOString().split('T')[0]);
-        setItems([
-          { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: settings.defaultTaxRate },
-        ]);
+        const inv = response.data;
+        setInvoice(inv);
+
+        // Only allow editing draft invoices
+        if (inv.status !== 'draft') {
+          toast({
+            title: 'Nicht bearbeitbar',
+            description: 'Nur Rechnungen im Entwurf-Status können bearbeitet werden.',
+            variant: 'destructive',
+          });
+          router.push(`/invoices/${invoiceId}`);
+          return;
+        }
+
+        // Populate form fields
+        setSelectedCustomerId(inv.customerId);
+        setSelectedCustomer(inv.customer);
+        setIssueDate(inv.issueDate?.split('T')[0] || '');
+        setDueDate(inv.dueDate?.split('T')[0] || '');
+        setNotes(inv.notes || '');
+        setPaymentTerms(inv.paymentTerms || '');
+
+        // Populate items
+        if (inv.items && inv.items.length > 0) {
+          setItems(inv.items.map(item => ({
+            id: item.id,
+            description: item.description,
+            quantity: item.quantity,
+            unit: item.unit,
+            unitPrice: item.unitPrice,
+            taxRate: item.taxRate,
+          })));
+        } else {
+          setItems([{ description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 }]);
+        }
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Rechnung konnte nicht geladen werden.',
+          variant: 'destructive',
+        });
+        router.push('/invoices');
       }
     } catch (error) {
-      console.error('Error loading settings:', error);
-      // Set default due date if settings fail
-      const due = new Date();
-      due.setDate(due.getDate() + 14);
-      setDueDate(due.toISOString().split('T')[0]);
+      console.error('Error loading invoice:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Rechnung konnte nicht geladen werden.',
+        variant: 'destructive',
+      });
+      router.push('/invoices');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,7 +144,6 @@ export default function NewInvoicePage() {
       { description: '', quantity: 1, unit: 'Stück', unitPrice: 0, taxRate: 19 },
     ]);
   };
-
 
   const removeItem = (index: number) => {
     if (items.length > 1) {
@@ -151,26 +185,26 @@ export default function NewInvoicePage() {
 
     if (!selectedCustomerId) {
       toast({
-        title: "Fehler",
-        description: "Bitte wählen Sie einen Kunden aus.",
-        variant: "destructive",
+        title: 'Fehler',
+        description: 'Bitte wählen Sie einen Kunden aus.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (items.some((item) => !item.description || item.unitPrice <= 0)) {
       toast({
-        title: "Fehler",
-        description: "Bitte füllen Sie alle Positionen vollständig aus.",
-        variant: "destructive",
+        title: 'Fehler',
+        description: 'Bitte füllen Sie alle Positionen vollständig aus.',
+        variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
 
     try {
-      const response = await invoicesApi.create({
+      const response = await invoicesApi.update(invoiceId, {
         customerId: selectedCustomerId,
         issueDate,
         dueDate,
@@ -185,35 +219,54 @@ export default function NewInvoicePage() {
         })),
       });
 
-      if (response.success && response.data) {
+      if (response.success) {
         toast({
-          title: "Erfolg",
-          description: "Rechnung wurde erfolgreich erstellt.",
+          title: 'Erfolg',
+          description: 'Rechnung wurde gespeichert.',
         });
-        router.push(`/invoices/${response.data.id}`);
+        router.push(`/invoices/${invoiceId}`);
       } else {
         toast({
-          title: "Fehler",
-          description: response.error || 'Fehler beim Erstellen der Rechnung',
-          variant: "destructive",
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Speichern der Rechnung.',
+          variant: 'destructive',
         });
       }
     } catch (error) {
-      console.error('Error creating invoice:', error);
+      console.error('Error updating invoice:', error);
       toast({
-        title: "Fehler",
-        description: "Ein unerwarteter Fehler ist aufgetreten.",
-        variant: "destructive",
+        title: 'Fehler',
+        description: 'Fehler beim Speichern der Rechnung.',
+        variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!invoice) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <h2 className="text-xl font-semibold">Rechnung nicht gefunden</h2>
+        <Link href="/invoices">
+          <Button className="mt-4">Zurück zur Übersicht</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const totals = calculateTotals();
-  
+
   const previewInvoice = {
-    invoiceNumber: 'VORSCHAU',
+    invoiceNumber: invoice.invoiceNumber,
     status: 'draft' as const,
     issueDate,
     dueDate,
@@ -230,15 +283,15 @@ export default function NewInvoicePage() {
   return (
     <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col">
       <div className="flex items-center gap-4 flex-none">
-        <Link href="/invoices">
+        <Link href={`/invoices/${invoiceId}`}>
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Neue Rechnung</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Rechnung bearbeiten</h1>
           <p className="text-muted-foreground">
-            Erstellen Sie eine neue Rechnung.
+            {invoice.invoiceNumber}
           </p>
         </div>
       </div>
@@ -252,10 +305,10 @@ export default function NewInvoicePage() {
                 <CardTitle>Rechnungsdetails</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <CustomerSelector 
-                  value={selectedCustomerId} 
-                  onChange={handleCustomerChange} 
-                  required 
+                <CustomerSelector
+                  value={selectedCustomerId}
+                  onChange={handleCustomerChange}
+                  required
                 />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -415,7 +468,7 @@ export default function NewInvoicePage() {
                 </div>
               </CardContent>
             </Card>
-            
+
              <Card>
               <CardHeader>
                 <CardTitle>Zusammenfassung</CardTitle>
@@ -438,13 +491,13 @@ export default function NewInvoicePage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
+            <Button type="submit" className="w-full" disabled={saving}>
+              {saving ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              Rechnung erstellen
+              Änderungen speichern
             </Button>
           </form>
         </div>

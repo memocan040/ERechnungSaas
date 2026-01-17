@@ -118,4 +118,16 @@ export const expensesApi = {
     const response = await apiClient.post<CostCenter>('/expenses/cost-centers', data);
     return response as { success: boolean; data: CostCenter; message: string };
   },
+
+  async uploadReceipt(id: string, file: File): Promise<ExpenseResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // We need to pass the FormData directly. The apiClient might try to stringify it if we're not careful.
+    // Usually apiClient wrapper handles FormData if content-type is not set or set to multipart.
+    // Let's check apiClient implementation if possible, or assume standard fetch behavior where body=FormData works.
+    // Looking at common patterns:
+    const response = await apiClient.post<Expense>(`/expenses/${id}/receipt`, formData);
+    return response as ExpenseResponse;
+  },
 };

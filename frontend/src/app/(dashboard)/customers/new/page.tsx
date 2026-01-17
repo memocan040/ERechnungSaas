@@ -10,9 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { customersApi } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 export default function NewCustomerPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '',
@@ -38,7 +40,11 @@ export default function NewCustomerPage() {
     e.preventDefault();
 
     if (!formData.companyName) {
-      alert('Bitte geben Sie einen Firmennamen ein.');
+      toast({
+        title: "Fehler",
+        description: "Bitte geben Sie einen Firmennamen ein.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -48,13 +54,25 @@ export default function NewCustomerPage() {
       const response = await customersApi.create(formData);
 
       if (response.success && response.data) {
+        toast({
+          title: "Erfolg",
+          description: "Kunde wurde erfolgreich erstellt.",
+        });
         router.push('/customers');
       } else {
-        alert(response.error || 'Fehler beim Erstellen des Kunden');
+        toast({
+          title: "Fehler",
+          description: response.error || 'Fehler beim Erstellen des Kunden',
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error creating customer:', error);
-      alert('Fehler beim Erstellen des Kunden');
+      toast({
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

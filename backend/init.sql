@@ -560,3 +560,108 @@ CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON quotes FOR EACH ROW EXE
 ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS quote_prefix VARCHAR(20) DEFAULT 'AN-';
 ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS next_quote_number INTEGER DEFAULT 1;
 ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS default_quote_validity_days INTEGER DEFAULT 30;
+
+-- ============================================
+-- INCOMING INVOICES MODULE (Eingangsrechnungen)
+-- ============================================
+
+-- Incoming Invoices table (Eingangsrechnungen)
+CREATE TABLE incoming_invoices (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    vendor_id UUID REFERENCES vendors(id) ON DELETE SET NULL,
+
+    -- Invoice identification
+    invoice_number VARCHAR(100),
+    vendor_invoice_number VARCHAR(100),
+
+    -- Status workflow
+    status VARCHAR(20) DEFAULT 'draft' CHECK (status IN (
+        'draft', 'reviewed', 'approved', 'booked', 'paid', 'rejected', 'cancelled'
+    )),
+
+    -- Dates
+    invoice_date DATE,
+    due_date DATE,
+    received_date DATE DEFAULT CURRENT_DATE,
+    paid_date DATE,
+    booked_date DATE,
+
+    -- Amounts
+    subtotal DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    tax_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    total DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    currency VARCHAR(3) DEFAULT 'EUR',
+
+    -- Vendor details (extracted or manual)
+    vendor_name VARCHAR(255),
+    vendor_address TEXT,
+    vendor_vat_id VARCHAR(50),
+    vendor_tax_number VARCHAR(50),
+    vendor_iban VARCHAR(50),
+    vendor_bic VARCHAR(20),
+
+    -- Payment information
+    payment_reference VARCHAR(255),
+    payment_method VARCHAR(50) CHECK (payment_method IN (
+        'bank_transfer', 'cash', 'credit_card', 'debit_card', 'paypal', 'direct_debit', 'other'
+    )),
+
+    -- Document handling
+    file_path VARCHAR(500),
+    file_type VARCHAR(50),
+    original_filename VARCHAR(255),
+
+    -- OCR data
+    ocr_raw_text TEXT,
+    ocr_confidence DECIMAL(5, 2),
+    ocr_processed_at TIMESTAMP WITH TIME ZONE,
+
+    -- Categorization
+    category_id UUID REFERENCES expense_categories(id),
+    cost_center_id UUID REFERENCES cost_centers(id),
+
+    -- Accounting
+    journal_entry_id UUID REFERENCES journal_entries(id),
+    expense_account_id UUID REFERENCES chart_of_accounts(id),
+
+    -- Notes
+    description TEXT,
+    notes TEXT,
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Incoming Invoice Items table (Positionen)
+CREATE TABLE incoming_invoice_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    incoming_invoice_id UUID NOT NULL REFERENCES incoming_invoices(id) ON DELETE CASCADE,
+    position INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    quantity DECIMAL(10, 3) NOT NULL DEFAULT 1,
+    unit VARCHAR(20) DEFAULT 'Stück',
+    unit_price DECIMAL(12, 2) NOT NULL,
+    tax_rate DECIMAL(5, 2) DEFAULT 19.00,
+    account_id UUID REFERENCES chart_of_accounts(id),
+    cost_center_id UUID REFERENCES cost_centers(id),
+    subtotal DECIMAL(12, 2) NOT NULL,
+    tax_amount DECIMAL(12, 2) NOT NULL,
+    total DECIMAL(12, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for incoming invoices
+CREATE INDEX idx_incoming_invoices_user_id ON incoming_invoices(user_id);
+CREATE INDEX idx_incoming_invoices_vendor_id ON incoming_invoices(vendor_id);
+CREATE INDEX idx_incoming_invoices_status ON incoming_invoices(status);
+CREATE INDEX idx_incoming_invoices_invoice_date ON incoming_invoices(invoice_date);
+CREATE INDEX idx_incoming_invoices_due_date ON incoming_invoices(due_date);
+CREATE INDEX idx_incoming_invoice_items_invoice_id ON incoming_invoice_items(incoming_invoice_id);
+
+-- Trigger for incoming invoices
+CREATE TRIGGER update_incoming_invoices_updated_at BEFORE UPDATE ON incoming_invoices FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Add incoming invoice number settings to accounting_settings
+ALTER TABLE accounting_settings ADD COLUMN IF NOT EXISTS next_incoming_invoice_number INTEGER DEFAULT 1;
+ALTER TABLE accounting_settings ADD COLUMN IF NOT EXISTS incoming_invoice_prefix VARCHAR(20) DEFAULT 'EIN-';

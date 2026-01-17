@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Customer } from '@/types';
 import { customersApi } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('de-DE', {
@@ -23,6 +24,7 @@ function formatCurrency(amount: number): string {
 export default function CustomerDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -100,7 +102,11 @@ export default function CustomerDetailPage() {
     e.preventDefault();
 
     if (!formData.companyName) {
-      alert('Bitte geben Sie einen Firmennamen ein.');
+      toast({
+        title: "Fehler",
+        description: "Bitte geben Sie einen Firmennamen ein.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -110,13 +116,25 @@ export default function CustomerDetailPage() {
       const response = await customersApi.update(params.id as string, formData);
 
       if (response.success) {
+        toast({
+          title: "Erfolg",
+          description: "Kunde wurde erfolgreich aktualisiert.",
+        });
         router.push('/customers');
       } else {
-        alert(response.error || 'Fehler beim Speichern');
+        toast({
+          title: "Fehler",
+          description: response.error || 'Fehler beim Speichern',
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error updating customer:', error);
-      alert('Fehler beim Speichern');
+      toast({
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten.",
+        variant: "destructive",
+      });
     } finally {
       setSaving(false);
     }

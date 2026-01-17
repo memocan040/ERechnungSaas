@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Customer } from '@/types';
 import { customersApi } from '@/lib/api';
 
@@ -24,9 +25,11 @@ interface CustomerSelectorProps {
 
 export function CustomerSelector({ value, onChange, label = "Kunde", required = false }: CustomerSelectorProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadCustomers = async () => {
+      setLoading(true);
       try {
         const response = await customersApi.getAll({ limit: 100 });
         if (response.success && response.data) {
@@ -34,6 +37,8 @@ export function CustomerSelector({ value, onChange, label = "Kunde", required = 
         }
       } catch (error) {
         console.error('Error loading customers:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -44,6 +49,20 @@ export function CustomerSelector({ value, onChange, label = "Kunde", required = 
     const selectedCustomer = customers.find(c => c.id === newValue);
     onChange(newValue, selectedCustomer);
   };
+
+  if (loading) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+           <Label>{label} {required && '*'}</Label>
+           <Skeleton className="h-10 w-full" />
+        </div>
+        <div className="flex items-end">
+          <Skeleton className="h-10 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">

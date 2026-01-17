@@ -671,3 +671,215 @@ export interface QuoteStats {
   rejectedQuotes: number;
   expiredQuotes: number;
 }
+
+// ============================================
+// INCOMING INVOICES MODULE TYPES (Eingangsrechnungen)
+// ============================================
+
+export type IncomingInvoiceStatus = 'draft' | 'reviewed' | 'approved' | 'booked' | 'paid' | 'rejected' | 'cancelled';
+
+export type IncomingPaymentMethod = 'bank_transfer' | 'cash' | 'credit_card' | 'debit_card' | 'paypal' | 'direct_debit' | 'other';
+
+export interface IncomingInvoiceItem {
+  id: string;
+  incomingInvoiceId: string;
+  position: number;
+  description: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  taxRate: number;
+  accountId?: string;
+  costCenterId?: string;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  createdAt: Date;
+  // Virtual fields
+  account?: ChartOfAccount;
+  costCenter?: CostCenter;
+}
+
+export interface IncomingInvoice {
+  id: string;
+  userId: string;
+  vendorId?: string;
+
+  // Invoice identification
+  invoiceNumber: string;
+  vendorInvoiceNumber?: string;
+
+  // Status
+  status: IncomingInvoiceStatus;
+
+  // Dates
+  invoiceDate?: Date;
+  dueDate?: Date;
+  receivedDate: Date;
+  paidDate?: Date;
+  bookedDate?: Date;
+
+  // Amounts
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  currency: string;
+
+  // Vendor details (extracted or manual)
+  vendorName?: string;
+  vendorAddress?: string;
+  vendorVatId?: string;
+  vendorTaxNumber?: string;
+  vendorIban?: string;
+  vendorBic?: string;
+
+  // Payment information
+  paymentReference?: string;
+  paymentMethod?: IncomingPaymentMethod;
+
+  // Document handling
+  filePath?: string;
+  fileType?: string;
+  originalFilename?: string;
+
+  // OCR data
+  ocrRawText?: string;
+  ocrConfidence?: number;
+  ocrProcessedAt?: Date;
+
+  // Categorization
+  categoryId?: string;
+  costCenterId?: string;
+
+  // Accounting
+  journalEntryId?: string;
+  expenseAccountId?: string;
+
+  // Notes
+  description?: string;
+  notes?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Virtual fields
+  vendor?: Vendor;
+  category?: ExpenseCategory;
+  costCenter?: CostCenter;
+  items?: IncomingInvoiceItem[];
+  journalEntry?: JournalEntry;
+  expenseAccount?: ChartOfAccount;
+}
+
+export interface OcrExtractedData {
+  invoiceNumber?: string;
+  invoiceDate?: string;
+  dueDate?: string;
+  vendorName?: string;
+  vendorAddress?: string;
+  vendorVatId?: string;
+  vendorTaxNumber?: string;
+  vendorIban?: string;
+  vendorBic?: string;
+  subtotal?: number;
+  taxAmount?: number;
+  total?: number;
+  taxRate?: number;
+  items?: Array<{
+    description: string;
+    quantity?: number;
+    unitPrice?: number;
+    total?: number;
+  }>;
+  paymentReference?: string;
+  currency?: string;
+}
+
+export interface OcrResult {
+  rawText: string;
+  confidence: number;
+  extractedData: OcrExtractedData;
+  processedAt: Date;
+}
+
+export interface CreateIncomingInvoiceData {
+  vendorId?: string;
+  vendorInvoiceNumber?: string;
+  invoiceDate?: Date;
+  dueDate?: Date;
+  receivedDate?: Date;
+  vendorName?: string;
+  vendorAddress?: string;
+  vendorVatId?: string;
+  vendorTaxNumber?: string;
+  vendorIban?: string;
+  vendorBic?: string;
+  paymentReference?: string;
+  paymentMethod?: IncomingPaymentMethod;
+  categoryId?: string;
+  costCenterId?: string;
+  expenseAccountId?: string;
+  description?: string;
+  notes?: string;
+  items: Array<{
+    description: string;
+    quantity: number;
+    unit?: string;
+    unitPrice: number;
+    taxRate?: number;
+    accountId?: string;
+    costCenterId?: string;
+  }>;
+}
+
+export interface UpdateIncomingInvoiceData {
+  vendorId?: string;
+  vendorInvoiceNumber?: string;
+  invoiceDate?: Date;
+  dueDate?: Date;
+  vendorName?: string;
+  vendorAddress?: string;
+  vendorVatId?: string;
+  vendorTaxNumber?: string;
+  vendorIban?: string;
+  vendorBic?: string;
+  paymentReference?: string;
+  paymentMethod?: IncomingPaymentMethod;
+  categoryId?: string;
+  costCenterId?: string;
+  expenseAccountId?: string;
+  description?: string;
+  notes?: string;
+  items?: Array<{
+    description: string;
+    quantity: number;
+    unit?: string;
+    unitPrice: number;
+    taxRate?: number;
+    accountId?: string;
+    costCenterId?: string;
+  }>;
+}
+
+export interface IncomingInvoiceFilters {
+  search?: string;
+  status?: IncomingInvoiceStatus;
+  vendorId?: string;
+  categoryId?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface IncomingInvoiceStats {
+  totalInvoices: number;
+  draftCount: number;
+  reviewedCount: number;
+  approvedCount: number;
+  bookedCount: number;
+  paidCount: number;
+  totalUnpaid: number;
+  totalOverdue: number;
+  totalThisMonth: number;
+}

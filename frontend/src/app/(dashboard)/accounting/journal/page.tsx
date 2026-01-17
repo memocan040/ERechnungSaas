@@ -33,8 +33,10 @@ import {
 import { Label } from '@/components/ui/label';
 import { JournalEntry, JournalEntryLine, JournalEntryStatus, ChartOfAccount } from '@/types';
 import { accountingApi } from '@/lib/api/accounting';
+import { useToast } from '@/hooks/use-toast';
 
 export default function JournalEntriesPage() {
+  const { toast } = useToast();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [accounts, setAccounts] = useState<ChartOfAccount[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,12 +139,20 @@ export default function JournalEntriesPage() {
     const { isBalanced } = calculateTotals();
 
     if (!isBalanced) {
-      alert('Buchungssatz ist nicht ausgeglichen! Soll und Haben müssen gleich sein.');
+      toast({
+        title: "Fehler",
+        description: "Buchungssatz ist nicht ausgeglichen! Soll und Haben müssen gleich sein.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!newEntry.description) {
-      alert('Bitte Beschreibung eingeben');
+      toast({
+        title: "Fehler",
+        description: "Bitte Beschreibung eingeben",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -154,13 +164,21 @@ export default function JournalEntriesPage() {
       });
 
       if (response.success) {
+        toast({
+          title: "Erfolg",
+          description: "Buchungssatz erfolgreich erstellt.",
+        });
         loadEntries();
         setCreateDialog(false);
         resetForm();
       }
     } catch (error) {
       console.error('Error creating journal entry:', error);
-      alert('Fehler beim Erstellen des Buchungssatzes');
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Erstellen des Buchungssatzes",
+        variant: "destructive",
+      });
     } finally {
       setCreating(false);
     }
@@ -169,28 +187,48 @@ export default function JournalEntriesPage() {
   const handlePostEntry = async (id: string) => {
     try {
       await accountingApi.postJournalEntry(id);
+      toast({
+        title: "Erfolg",
+        description: "Buchungssatz erfolgreich gebucht.",
+      });
       loadEntries();
     } catch (error) {
       console.error('Error posting entry:', error);
-      alert('Fehler beim Buchen');
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Buchen",
+        variant: "destructive",
+      });
     }
   };
 
   const handleReverseEntry = async () => {
     if (!selectedEntry || !reverseReason) {
-      alert('Bitte Stornierungsgrund angeben');
+      toast({
+        title: "Fehler",
+        description: "Bitte Stornierungsgrund angeben",
+        variant: "destructive",
+      });
       return;
     }
 
     try {
       await accountingApi.reverseJournalEntry(selectedEntry.id, reverseReason);
+      toast({
+        title: "Erfolg",
+        description: "Buchungssatz erfolgreich storniert.",
+      });
       loadEntries();
       setReverseDialog(false);
       setSelectedEntry(null);
       setReverseReason('');
     } catch (error) {
       console.error('Error reversing entry:', error);
-      alert('Fehler beim Stornieren');
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Stornieren",
+        variant: "destructive",
+      });
     }
   };
 

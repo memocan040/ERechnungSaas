@@ -8,8 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Company } from '@/types';
 import { companyApi } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 export default function CompanyPage() {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [company, setCompany] = useState<Company | null>(null);
@@ -80,7 +82,11 @@ export default function CompanyPage() {
     e.preventDefault();
 
     if (!formData.name) {
-      alert('Bitte geben Sie einen Firmennamen ein.');
+      toast({
+        title: 'Fehler',
+        description: 'Bitte geben Sie einen Firmennamen ein.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -91,13 +97,24 @@ export default function CompanyPage() {
 
       if (response.success) {
         setCompany(response.data || null);
-        alert('Unternehmensdaten gespeichert');
+        toast({
+          title: 'Erfolg',
+          description: 'Unternehmensdaten gespeichert',
+        });
       } else {
-        alert(response.error || 'Fehler beim Speichern');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Speichern',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error saving company:', error);
-      alert('Fehler beim Speichern');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern',
+        variant: 'destructive',
+      });
     } finally {
       setSaving(false);
     }
@@ -111,13 +128,24 @@ export default function CompanyPage() {
       const response = await companyApi.uploadLogo(file);
       if (response.success && response.data) {
         setCompany(response.data);
-        alert('Logo hochgeladen');
+        toast({
+          title: 'Erfolg',
+          description: 'Logo hochgeladen',
+        });
       } else {
-        alert(response.error || 'Fehler beim Hochladen');
+        toast({
+          title: 'Fehler',
+          description: response.error || 'Fehler beim Hochladen',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Error uploading logo:', error);
-      alert('Fehler beim Hochladen');
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Hochladen',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -372,7 +400,7 @@ export default function CompanyPage() {
               {company?.logoUrl && (
                 <div className="border rounded-lg p-4 bg-muted/50">
                   <img
-                    src={`http://localhost:3001${company.logoUrl}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3001'}${company.logoUrl}`}
                     alt="Logo"
                     className="max-h-24 object-contain"
                   />

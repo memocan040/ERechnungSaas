@@ -1,0 +1,226 @@
+================================================================================
+E-RECHNUNG SAAS - VERBESSERUNGEN UND OFFENE PUNKTE
+================================================================================
+Stand: 16.01.2026
+================================================================================
+
+================================================================================
+1. ANGEBOTE-MODUL (QUOTES) - Status: 90% fertig
+================================================================================
+
+KRITISCHE BUGS:
+- [x] Hardcoded URL in quote-preview.tsx:82 (BEHOBEN 16.01.2026)
+      Problem: `http://localhost:3001${company.logoUrl}`
+      Lösung: Umgebungsvariable NEXT_PUBLIC_API_URL verwendet
+      Auch behoben in: invoice-preview.tsx, company/page.tsx
+
+VERBESSERUNGEN:
+- [ ] Fehlerbehandlung: alert() durch Toast-Benachrichtigungen ersetzen
+- [ ] Code-Duplizierung: Status-Konfiguration in eine zentrale Datei auslagern
+- [ ] E-Mail-Benachrichtigungen bei Statusänderungen implementieren
+- [ ] Automatische Ablauf-Prüfung (checkExpiredQuotes) als Scheduler einrichten
+- [ ] Tests hinzufügen (Unit + Integration)
+
+================================================================================
+2. RECHNUNGEN-MODUL (INVOICES) - Status: 85% fertig
+================================================================================
+
+KRITISCHE BUGS:
+- [x] FEHLENDE EDIT-SEITE: /invoices/[id]/edit (BEHOBEN 16.01.2026)
+      Problem: Detail-Ansicht verlinkte auf nicht existierende Seite (404)
+      Lösung: /frontend/src/app/(dashboard)/invoices/[id]/edit/page.tsx erstellt
+      Features: Live-Vorschau, Toast-Benachrichtigungen, Draft-only Editing
+
+VERBESSERUNGEN:
+- [ ] Design-Einstellungen UI für PDF-Anpassung erstellen
+- [ ] Hardcodierte Länderzuordnung 'DE' konfigurierbar machen
+- [ ] Code-Duplizierung: Steuer- und Währungsformatierung zentralisieren
+- [ ] Tests hinzufügen
+- [ ] Multi-Language Support für XML-Export
+
+================================================================================
+3. KUNDEN-MODUL (CUSTOMERS) - Status: 95% fertig
+================================================================================
+
+VERBESSERUNGEN:
+- [ ] E-Mail-Validierung: Zusätzliche Client-Validierung (nicht nur HTML5)
+- [x] alert() durch Toast-Benachrichtigungen ersetzen (BEHOBEN 16.01.2026)
+      Lösung: useToast Hook in customers/new und customers/[id] integriert
+- [x] Loading-Skeleton in CustomerSelector hinzufügen (BEHOBEN 16.01.2026)
+      Lösung: Skeleton-Komponente erstellt und in CustomerSelector integriert
+- [ ] Kunden-Import (CSV) implementieren
+- [ ] Kunden-Export (CSV/Excel) implementieren
+
+================================================================================
+4. AUSGABEN-MODUL (EXPENSES) - Status: 85% fertig
+================================================================================
+
+KRITISCHE BUGS:
+- [x] FEHLENDE DETAIL-SEITE: /expenses/[id]/page.tsx (BEHOBEN 16.01.2026)
+      Problem: Ausgaben konnten nicht angezeigt oder bearbeitet werden
+      Lösung: /frontend/src/app/(dashboard)/expenses/[id]/page.tsx erstellt
+      Features: View/Edit-Modus, Status-Workflow, Toast-Benachrichtigungen
+
+- [x] N+1 QUERY PROBLEM in getExpenses() (BEHOBEN 16.01.2026)
+      Problem: Performance-Issue durch Schleifen-basiertes Item-Fetching
+      Lösung: Single Query mit ANY($1) für alle Items + Map-basiertes Grouping
+      Geänderte Datei: /backend/src/services/expense.service.ts
+
+FEHLENDE FEATURES:
+- [x] Beleg-Upload: receipt_url Feld existiert, aber keine Upload-UI (BEHOBEN 16.01.2026)
+      Lösung: Backend Routes + Service implementiert, Frontend Dialog + Button hinzugefügt
+- [x] Buchungsintegration: journal_entry_id Feld ungenutzt (BEHOBEN 16.01.2026)
+      Lösung: Automatische Buchungssatz-Erstellung bei Status 'approved' implementiert.
+      Bucht Aufwand (Soll) + Vorsteuer (Soll) an Verbindlichkeiten (Haben).
+- [ ] Export/Berichtsfunktion für Ausgaben
+- [ ] Genehmigungsworkflow UI (nicht nur Status-Dropdown)
+- [ ] Audit-Trail für Statusänderungen
+
+================================================================================
+5. BUCHHALTUNG-MODUL (ACCOUNTING) - Status: 90% fertig
+================================================================================
+
+FEHLENDE FEATURES:
+- [x] Frontend-Seite für Probebilanz (Trial Balance) (BEHOBEN 16.01.2026)
+      Lösung: /frontend/src/app/(dashboard)/accounting/trial-balance/page.tsx erstellt
+      Features: Datumsfilter, Saldenliste, Debit/Credit Spalten, Summenbildung
+
+- [ ] Kontoauszug-Ansicht (Transaktionen pro Konto)
+- [ ] Kostenstellen-Verwaltung UI
+- [ ] SKR04 Kontendaten (nur SKR03 vorhanden)
+- [ ] Jahresabschluss-Workflow
+- [ ] Kontenhierarchie-Visualisierung
+
+PERFORMANCE:
+- [x] Trial-Balance macht N+1 Queries (BEHOBEN 16.01.2026)
+      Lösung: Single Aggregation Query mit JOIN und GROUP BY
+      Geänderte Datei: /backend/src/services/ledger.service.ts
+
+================================================================================
+6. BERICHTE-MODUL (REPORTS) - Status: 60% fertig
+================================================================================
+
+KRITISCHE BUGS:
+- [x] MOCK DATA: Dashboard nutzte Mock-Daten (BEHOBEN 16.01.2026)
+      Problem: Dashboard und Komponenten importierten aus /lib/mock-data.ts
+      Lösung: Dashboard verwendet jetzt reportsApi und invoicesApi
+      Geänderte Dateien:
+      - /app/(dashboard)/dashboard/page.tsx
+      - /components/dashboard/revenue-chart.tsx
+      - /components/dashboard/status-chart.tsx
+      - /components/dashboard/recent-invoices.tsx
+
+FEHLENDE FEATURES:
+- [ ] Gewinn- und Verlustrechnung (P&L Statement)
+- [ ] Bilanz (Balance Sheet)
+- [ ] Einnahmen-Übersicht
+- [ ] Cashflow-Analyse
+- [ ] Finanzkennzahlen (Ratios)
+- [ ] Budget vs. Ist-Vergleich
+- [ ] Forecasting/Prognosen
+- [ ] Forderungsalterung (Customer Aging)
+- [ ] Lieferantenanalyse
+
+VERBESSERUNGEN:
+- [ ] Caching für häufige Report-Abfragen
+- [ ] Pagination für Kundenübersicht
+- [ ] Echtzeit-Updates
+- [ ] Integration mit Buchhaltungs-Modul
+
+================================================================================
+7. EINGANG-MODUL (INCOMING INVOICES) - Status: 95% fertig
+================================================================================
+
+VERBESSERUNGEN:
+- [ ] OCR-Genauigkeit verbessern (aktuell Tesseract.js)
+- [ ] Batch-Upload für mehrere Dateien
+- [ ] Automatische Lieferanten-Erkennung verbessern
+- [ ] E-Mail-Import (Rechnungen aus E-Mail-Anhängen)
+
+================================================================================
+8. ALLGEMEINE VERBESSERUNGEN (CODEBASE-WEIT)
+================================================================================
+
+CODE-QUALITÄT:
+- [x] alert() überall durch Toast-Benachrichtigungen ersetzen (BEHOBEN 16.01.2026)
+      Files: invoices/new, accounting/journal, customers/new, customers/[id]
+- [ ] Einheitliche Fehlerbehandlung implementieren
+- [ ] Gemeinsame Utility-Funktionen zentralisieren:
+      - formatCurrency()
+      - formatDate()
+      - Status-Labels und -Farben
+- [ ] TypeScript strict mode aktivieren
+- [ ] ESLint-Regeln verschärfen
+
+TESTS:
+- [ ] Unit Tests für Services
+- [ ] Integration Tests für API-Endpunkte
+- [ ] E2E Tests für kritische Workflows
+- [ ] Test Coverage > 80% anstreben
+
+PERFORMANCE:
+- [ ] Database Indexes überprüfen und optimieren
+- [ ] API Response Caching implementieren
+- [ ] Lazy Loading für große Listen
+- [ ] Bundle Size optimieren
+
+SICHERHEIT:
+- [ ] Rate Limiting für API-Endpunkte
+- [ ] Input Sanitization überprüfen
+- [ ] CSRF Protection validieren
+- [ ] Security Headers konfigurieren
+
+DOKUMENTATION:
+- [ ] API-Dokumentation (OpenAPI/Swagger)
+- [ ] Code-Kommentare für komplexe Logik
+- [ ] README mit Setup-Anleitung
+- [ ] Deployment-Guide
+
+================================================================================
+PRIORITÄTEN-MATRIX
+================================================================================
+
+HOCH (Kritisch - Sofort beheben):
+1. [ERLEDIGT] Fehlende Edit-Seite für Rechnungen
+2. [ERLEDIGT] Fehlende Detail-Seite für Ausgaben
+3. [ERLEDIGT] Mock-Daten in Reports durch echte API ersetzen
+4. [ERLEDIGT] Hardcoded localhost URL in Quote-Preview
+
+MITTEL (Wichtig - Bald beheben):
+5. [ERLEDIGT] N+1 Query Problem in Expenses
+6. [ERLEDIGT] N+1 Query Problem in Trial Balance
+7. [ERLEDIGT] Beleg-Upload für Ausgaben
+8. [ERLEDIGT] Probebilanz-Frontend
+9. [ERLEDIGT] Buchungsintegration Ausgaben
+
+NIEDRIG (Nice-to-have):
+10. E-Mail-Benachrichtigungen
+11. SKR04 Support
+12. Erweiterte Berichte (P&L, Bilanz)
+13. Tests
+
+================================================================================
+GESCHÄTZTE AUFWÄNDE (T-Shirt Sizes)
+================================================================================
+
+S (< 2 Stunden):
+- Hardcoded URL fixen
+- alert() durch Toast ersetzen
+- Loading-Skeletons hinzufügen
+
+M (2-4 Stunden):
+- Edit-Seite für Rechnungen
+- Detail-Seite für Ausgaben
+- Mock-Daten ersetzen
+
+L (4-8 Stunden):
+- Beleg-Upload System
+- Probebilanz-Frontend
+- N+1 Query Fixes
+
+XL (> 8 Stunden):
+- P&L und Bilanz Reports
+- Test-Suite aufbauen
+- E-Mail-System
+
+================================================================================
